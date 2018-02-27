@@ -15,7 +15,7 @@ export default {
   name: 'appmodal',
   methods: {
     openAssistant () {
-      alert('打开助手')
+      location.href = 'chaff://'
     },
     handleCloseModal () {
       this.$emit('closeModal')
