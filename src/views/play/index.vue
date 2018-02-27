@@ -1,3 +1,4 @@
+<!--suppress ALL -->
 <template>
   <div>
       <div class="header">
@@ -12,8 +13,8 @@
 
     <div class="task-list">
         <p class="title">标准任务</p>
-        <TaskCard v-for="item in tasklist" @handleClick='handleTaskItem' :id='item.id' :key="item.id" :exclusive='item.exclusive' :rest='item.rest'  :title='item.name' :process='item.process' :account='item.account'/>
-        <p class="title">标准任务预告</p>
+        <TaskCard v-if="!item.isInstalled" v-for="(item,key) in tasklist" @handleClick='handleTaskItem' :id='item.appName' :key="item.key" :exclusive='item.exclusive' :rest='item.remainCount'  :title='item.appName' :process='item.process' :account='item.bonus'/>
+        <p class="title" v-if="lettertasklist">标准任务预告</p>
         <TaskCard v-for="item in lettertasklist" :key="item.id"  :title='item.name' :process='item.process' :account='item.account' :exclusive='item.exclusive' :rest='item.rest'/>
     </div>
 
@@ -25,12 +26,12 @@
 <script>
 import AppModal from '@/components/AppModal'
 import TaskCard from '@/components/TaskCard'
-import { fetchTaskList } from '@/api/user'
+import { fetchTaskList, fetchTaskListMock } from '@/api/user'
 export default {
   name: 'play',
   data () {
     return {
-      ifShowAppModal: true,
+      ifShowAppModal: false,
       tasklist: [],
       lettertasklist: []
     }
@@ -38,18 +39,38 @@ export default {
   components: {
     AppModal, TaskCard
   },
+  mounted(){
+    this.fetchTaskListMock()
+  },
   methods: {
     handleCloseModal () {
       this.ifShowAppModal = false
-      //   todo:判断是否开启助手
-      fetchTaskList().then(res => {
-        const {data: { tasklist, lettertasklist }} = res
-        this.tasklist = tasklist
-        this.lettertasklist = lettertasklist
-      })
     },
     handleTaskItem (id) {
-      this.$router.push({path: '/task', query: { id: id }})
+      this.fetchTaskList(() => this.$router.push({path: '/task', query: { id: id }}));
+
+    },
+    fetchTaskList (successCb) {
+      //   todo:判断是否开启助手
+      fetchTaskList().then(res => {
+        this.ifShowAppModal = false
+        const {data: { data, lettertasklist }} = res
+        this.tasklist = data.map(item => JSON.parse(item))
+        console.log(this.tasklist)
+        successCb ? successCb() : null
+        this.lettertasklist = lettertasklist
+      }).catch((err) => {
+        alert(err)
+        this.ifShowAppModal = true
+      })
+    },
+    fetchTaskListMock () {
+      fetchTaskListMock().then(res => {
+        this.ifShowAppModal = false
+        const {data: { data, lettertasklist }} = res
+        this.tasklist = data.map(item => JSON.parse(item))
+        this.lettertasklist = lettertasklist
+      })
     }
   }
 }

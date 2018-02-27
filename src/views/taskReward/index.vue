@@ -6,7 +6,7 @@
           </router-link>
           <div class="header-right">
               <p class="title">任务奖励 = {{appDetail.demo|numeral}}元试玩+{{appDetail.exclusive|numeral}}元专属</p>
-              <p>剩余时间{{countdown|countdownFormat}}</p>
+              <p>{{countdown|countdownFormat}}</p>
           </div>
       </div>
       <div>

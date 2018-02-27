@@ -9,6 +9,13 @@ export function fetchCurrent () {
 
 export function fetchTaskList () {
   return request({
+    url: '/chaff/v1/gettasklist',
+    method: 'get'
+  })
+}
+
+export function fetchTaskListMock () {
+  return request({
     url: '/tasklist',
     method: 'get'
   })

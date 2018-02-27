@@ -16,6 +16,7 @@ export default {
   methods: {
     openAssistant () {
       location.href = 'chaff://'
+      this.$emit('closeModal')
     },
     handleCloseModal () {
       this.$emit('closeModal')
