@@ -19,10 +19,11 @@ export default {
   name: 'appmodal',
   methods: {
     openAssistant () {
-      window.location.href = 'com.baidu.tieba://' // ios app协议
-      window.setTimeout(() => {
-        window.location.href = 'https://itunes.apple.com/cn/app/id477927812'
-      }, 2000)
+      // window.location.href = 'com.baidu.tieba://' // ios app协议
+      // window.setTimeout(() => {
+      //   window.location.href = 'https://itunes.apple.com/cn/app/id477927812'
+      // }, 2000)
+      location.href = 'chaff://'
     },
     handleCloseModal () {
       this.$emit('closeModal')

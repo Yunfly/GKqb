@@ -1,22 +1,22 @@
 <template>
   <div>
       <div class="header">
-          <router-link class="header-left" :to="{path:'/'}" tag='div'>
+          <router-link class="header-left" :to="{path:'/play'}" tag='div'>
               <i class="el-icon-arrow-left"></i>
           </router-link>
           <div class="header-right">
-              <p class="title">任务奖励 = {{appDetail.demo|numeral}}元试玩+{{appDetail.exclusive|numeral}}元专属</p>
-              <p>{{countdown|countdownFormat}}</p>
+              <p class="title">任务奖励 = {{bonus|numeral}}元试玩 <span v-if="exclusive">+{{appDetail.exclusive|numeral}}元专属</span></p>
+              <!--<p>{{countdown|countdownFormat}}</p>-->
           </div>
       </div>
       <div>
         <div class="app-logo">
-          <img src="@/assets/img_1.png" alt="">
+          <img :src="imageUrl" alt="">
         </div>
 
         <div class="app-content">
 <pre>
-一、前往App Store搜索： <span>买房</span>  约第<span>1</span>位
+一、前往App Store搜索： <span>{{appName}}</span>  约第<span>1</span>位
     找到该图标应用下载安装
 
 二、回本页面，点击<span>开始试玩</span>体验3分钟
@@ -26,8 +26,8 @@
 </pre>
 
           <div class="btn-group">
-            <el-button :disabled="!countdown" type="primary">前往App Store</el-button>
-            <el-button :disabled="!countdown" type="primary">开始试玩</el-button>
+            <el-button :disabled="!countdown" @click="handleGoAppStore" type="primary">前往App Store</el-button>
+            <el-button :disabled="!countdown" @click="handleTrying" type="primary">开始试玩</el-button>
             <el-button type="warning" @click="startPlay">领取奖励</el-button>
           </div>
         </div>
@@ -46,7 +46,13 @@ export default {
   data () {
     return {
       ifShowRewardModal: false,
-      id: this.$route.query.id,
+      appName: this.$route.query.appName,
+      bonus: this.$route.query.bonus,
+      urlScheme: this.$route.query.urlScheme,
+      exclusive: this.$route.query.exclusive,
+      exclusiveBonus: this.$route.query.exclusiveBonus,
+      imageUrl: this.$route.query.imageUrl,
+      itunesUrl: this.$route.query.itunesUrl,
       appDetail: {},
       countdown: 0
     }
@@ -74,7 +80,7 @@ export default {
   },
   mounted () {
     const self = this
-    fetchTaskItem(this.id).then(res => {
+    fetchTaskItem(this.appName).then(res => {
       const { data } = res
       this.appDetail = data
       this.countdown = data.countdown
@@ -94,6 +100,15 @@ export default {
     },
     handleCloseModal () {
       this.ifShowRewardModal = false
+    },
+    handleTrying () {
+      location.href = this.urlScheme
+      window.setTimeout(() => {
+        window.location.href = this.itunesUrl
+      }, 2000)
+    },
+    handleGoAppStore () {
+      location.href = 'itms-apps://'
     }
   }
 }

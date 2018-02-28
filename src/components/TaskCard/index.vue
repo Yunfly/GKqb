@@ -1,10 +1,10 @@
 <template>
-  <div class="normal" @click="$emit('handleClick',id)">
+  <div class="normal" @click="$emit('handleClick',item)">
       <div class="app-logo">
-          <img src="@/assets/img_1.png" alt="">
+          <img :src="item.imageUrl" alt="">
       </div>
       <div class="app-content">
-          <p class="title">{{ title }}</p>
+          <p class="title">{{ title |words}}</p>
           <p v-if="process" class="process">进行中...</p>
           <p v-else class="suv-title"><span v-if="exclusive">有专属，</span> 剩余{{rest}}份</p>
       </div>
@@ -16,7 +16,12 @@
 <script>
 export default {
   name: 'taskcard',
-  props: ['title', 'rest', 'exclusive', 'process', 'account', 'id']
+  props: ['title', 'rest', 'exclusive', 'process', 'account', 'item'],
+  filters: {
+    words (value) {
+      return `${value[0]}***`
+    }
+  }
 }
 </script>
 
@@ -27,9 +32,13 @@ export default {
     align-items: center;
     .app-logo {
         width: 60px;
+        border: 1px solid #eee;
+        padding: 1px;
         img {
             width: 100%;
             height: auto;
+            position: relative;
+            top: 1px;
         }
     }
     .app-content {

@@ -4,7 +4,7 @@ import axios from 'axios'
 console.log(process.env)
 const service = axios.create({
   baseURL: process.env.BASE_API, // api的base_url
-  timeout: 5000 // request timeout
+  timeout: 5000, // request timeout
 })
 
 // request interceptor

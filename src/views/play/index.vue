@@ -13,7 +13,7 @@
 
     <div class="task-list">
         <p class="title">标准任务</p>
-        <TaskCard v-if="!item.isInstalled" v-for="(item,key) in tasklist" @handleClick='handleTaskItem' :id='item.appName' :key="item.key" :exclusive='item.exclusive' :rest='item.remainCount'  :title='item.appName' :process='item.process' :account='item.bonus'/>
+        <TaskCard v-if="!item.isInstalled" v-for="(item,key) in tasklist" @handleClick='handleTaskItem' :item='item' :key="item.key" :exclusive='item.exclusive' :rest='item.remainCount'  :title='item.appName' :process='item.process' :account='item.bonus'/>
         <p class="title" v-if="lettertasklist">标准任务预告</p>
         <TaskCard v-for="item in lettertasklist" :key="item.id"  :title='item.name' :process='item.process' :account='item.account' :exclusive='item.exclusive' :rest='item.rest'/>
     </div>
@@ -40,17 +40,20 @@ export default {
     AppModal, TaskCard
   },
   mounted(){
-    this.fetchTaskListMock()
+    this.fetchTaskList(null,this.fetchTaskListMock)
+
   },
   methods: {
     handleCloseModal () {
       this.ifShowAppModal = false
     },
-    handleTaskItem (id) {
-      this.fetchTaskList(() => this.$router.push({path: '/task', query: { id: id }}));
+    handleTaskItem (item) {
+      console.log(item)
+      const{appName, bonus, urlScheme, exclusive, imageUrl, itunesUrl,exclusiveBonus} = item
+      this.fetchTaskList(() => this.$router.push({path: '/task', query: { exclusiveBonus, itunesUrl, imageUrl,exclusive, appName, bonus,urlScheme }}));
 
     },
-    fetchTaskList (successCb) {
+    fetchTaskList (successCb,errorCb) {
       //   todo:判断是否开启助手
       fetchTaskList().then(res => {
         this.ifShowAppModal = false
@@ -60,8 +63,9 @@ export default {
         successCb ? successCb() : null
         this.lettertasklist = lettertasklist
       }).catch((err) => {
-        alert(err)
-        this.ifShowAppModal = true
+       // alert(err)
+        errorCb?errorCb():this.ifShowAppModal = true
+
       })
     },
     fetchTaskListMock () {
