@@ -1,7 +1,7 @@
 <template>
     <div>
        <p class="header">谷壳钱包 <span>Gkqb.com</span></p>
-       <div class="dashboard">
+       <router-link tag="div" :to="{path:'/person-center'}" class="dashboard">
            <div class="flex">
                 <div >
                     <p class="title">我的资产</p>
@@ -14,7 +14,7 @@
            </div>
         <p class="title">累计收入：<span>{{todayaccount|numeral}}元</span></p>
         <p class="title">今日收入：<span>{{totalaccount|numeral}}元</span></p>
-       </div>
+       </router-link>
        <div class="flex img-menu">
            <router-link :to="{path:'/play'}" tag='div'>
                <img src="../../assets/home_play_by.png" alt="">

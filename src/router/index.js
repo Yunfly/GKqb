@@ -22,6 +22,12 @@ export default new Router({
       component: resolve => {
         require(['../views/taskReward'], resolve)
       }
+    },
+    {
+      path: '/person-center',
+      component: resolve => {
+        require(['../views/personCenter'], resolve)
+      }
     }
   ]
 })
