@@ -4,10 +4,10 @@
         <i class="el-icon-close" @click="handleCloseModal"></i>
         <img src="@/assets/icon_pop_play_bg.png" alt="">
         <p class="text">完成任务</p>
-        <p class="text">+<span>1.4</span>元</p>
+        <p class="text">+<span>{{parseInt(bonus||0)+parseInt(exclusiveBonus||0)}}</span>元</p>
         <div class="flex">
           <p>试玩赚钱</p>
-          <p>链家</p>
+          <p>{{appName}}</p>
         </div>
         <el-button type="warning" class="btn" @click="openAssistant">打开助手</el-button>
       </div>
@@ -17,6 +17,7 @@
 <script>
 export default {
   name: 'appmodal',
+  props: ['appName', 'bonus', 'exclusiveBonus'],
   methods: {
     openAssistant () {
       // window.location.href = 'com.baidu.tieba://' // ios app协议

@@ -34,7 +34,7 @@
       </div>
 
        <transition name="fade">
-        <RewardModal  v-show="ifShowRewardModal" @closeModal="handleCloseModal"/>
+        <RewardModal  v-show="ifShowRewardModal" :appName="appName" :bonus="bonus" :exclusiveBonus="exclusiveBonus" @closeModal="handleCloseModal"/>
       </transition>
   </div>
 </template>
