@@ -13,7 +13,7 @@
 
     <div class="task-list">
         <p class="title">标准任务</p>
-        <TaskCard v-if="!item.isInstalled" v-for="(item,key) in tasklist" @handleClick='handleTaskItem' :item='item' :key="item.key" :exclusive='item.exclusive' :rest='item.remainCount'  :title='item.appName' :process='item.process' :account='item.bonus'/>
+        <TaskCard v-if="item.status!==2" v-for="(item,key) in tasklist" @handleClick='handleTaskItem' :item='item' :key="item.id" />
     </div>
 
       <transition name="fade">
@@ -46,18 +46,16 @@ export default {
       this.ifShowAppModal = false
     },
     handleTaskItem (item) {
-      console.log(item)
-      const{appName, bonus, urlScheme, exclusive, imageUrl, itunesUrl,exclusiveBonus} = item
-      this.fetchTaskList(() => this.$router.push({path: '/task', query: { exclusiveBonus, itunesUrl, imageUrl,exclusive, appName, bonus,urlScheme }}));
+      const{name, bonus, urlScheme, icon, itunesUrl,enableDate,exclusiveBonus} = item
+      this.fetchTaskList(() => this.$router.push({path: '/task', query: { exclusiveBonus, itunesUrl, icon, name, bonus,urlScheme }}));
 
     },
     fetchTaskList (successCb,errorCb) {
       //   todo:判断是否开启助手
-      fetchTaskList().then(res => {
+      fetchTaskList({type:0}).then(res => {
         this.ifShowAppModal = false
         const {data: { data, lettertasklist }} = res
-        this.tasklist = data.map(item => JSON.parse(item))
-        console.log(this.tasklist)
+        this.tasklist = data
         successCb ? successCb() : null
         this.lettertasklist = lettertasklist
       }).catch((err) => {

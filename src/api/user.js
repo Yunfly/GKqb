@@ -7,10 +7,11 @@ export function fetchCurrent () {
   })
 }
 
-export function fetchTaskList () {
+export function fetchTaskList (params) {
   return request({
-    url: '/chaff/v1/gettasklist',
-    method: 'get'
+    url: '/chaff/v1/task/list',
+    method: 'get',
+    params
   })
 }
 

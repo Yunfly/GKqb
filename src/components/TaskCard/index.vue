@@ -1,26 +1,29 @@
 <template>
   <div class="normal" @click="$emit('handleClick',item)">
       <div class="app-logo">
-          <img :src="item.imageUrl" alt="">
+          <img :src="item.icon" alt="">
       </div>
       <div class="app-content">
-          <p class="title">{{ title |words}}</p>
-          <p v-if="process" class="process">进行中...</p>
-          <p v-else class="suv-title"><span v-if="exclusive">有专属，</span> 剩余{{rest}}份</p>
+          <p class="title">{{ item.name |words}}</p>
+          <p v-if="item.status===1" class="process">进行中...</p>
+          <p v-else class="suv-title"><span v-if="item.exclusiveBonus>0">有专属，</span> 剩余{{item.remainCount}}份</p>
       </div>
       <div class="task-reward">
-          +<span>{{account|numeral}}</span>元
+          +<span>{{item.bonus|numeral}}</span>元
       </div>
   </div>
 </template>
 <script>
 export default {
   name: 'taskcard',
-  props: ['title', 'rest', 'exclusive', 'process', 'account', 'item'],
+  props: ['title', 'rest', 'exclusive', 'account', 'item'],
   filters: {
     words (value) {
       return `${value[0]}***`
     }
+  },
+  mounted(){
+    console.log(this)
   }
 }
 </script>

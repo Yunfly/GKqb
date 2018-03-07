@@ -16,7 +16,7 @@
 
         <div class="app-content">
 <pre>
-一、前往App Store搜索： <span>{{appName}}</span>  约第<span>1</span>位
+一、前往App Store搜索： <span>{{name}}</span>  约第<span>1</span>位
     找到该图标应用下载安装
 
 二、回本页面，点击<span>开始试玩</span>体验3分钟
@@ -34,7 +34,7 @@
       </div>
 
        <transition name="fade">
-        <RewardModal  v-show="ifShowRewardModal" :appName="appName" :bonus="bonus" :exclusiveBonus="exclusiveBonus" @closeModal="handleCloseModal"/>
+        <RewardModal  v-show="ifShowRewardModal" :appName="name" :bonus="bonus" :exclusiveBonus="exclusiveBonus" @closeModal="handleCloseModal"/>
       </transition>
   </div>
 </template>
@@ -46,12 +46,12 @@ export default {
   data () {
     return {
       ifShowRewardModal: false,
-      appName: this.$route.query.appName,
+      name: this.$route.query.name,
       bonus: this.$route.query.bonus,
       urlScheme: this.$route.query.urlScheme,
-      exclusive: this.$route.query.exclusive,
+      exclusive: this.$route.query.exclusiveBonus>0,
       exclusiveBonus: this.$route.query.exclusiveBonus,
-      imageUrl: this.$route.query.imageUrl,
+      imageUrl: this.$route.query.icon,
       itunesUrl: this.$route.query.itunesUrl,
       appDetail: {},
       countdown: 0
@@ -80,7 +80,7 @@ export default {
   },
   mounted () {
     const self = this
-    fetchTaskItem(this.appName).then(res => {
+    fetchTaskItem(this.name).then(res => {
       const { data } = res
       this.appDetail = data
       this.countdown = data.countdown
