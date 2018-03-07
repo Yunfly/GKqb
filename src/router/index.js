@@ -28,6 +28,22 @@ export default new Router({
       component: resolve => {
         require(['../views/personCenter'], resolve)
       }
+    },
+    {
+      path: '/setting',
+      component: resolve => {
+        require(['../views/setting'], resolve)
+      }
+    },{
+      path: '/changeBind',
+      component: resolve => {
+        require(['../views/changeBind'], resolve)
+      }
+    },{
+      path: '/cardEarn',
+      component: resolve => {
+        require(['../views/cardEarn'], resolve)
+      }
     }
   ]
 })

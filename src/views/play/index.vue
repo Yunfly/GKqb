@@ -14,8 +14,6 @@
     <div class="task-list">
         <p class="title">标准任务</p>
         <TaskCard v-if="!item.isInstalled" v-for="(item,key) in tasklist" @handleClick='handleTaskItem' :item='item' :key="item.key" :exclusive='item.exclusive' :rest='item.remainCount'  :title='item.appName' :process='item.process' :account='item.bonus'/>
-        <p class="title" v-if="lettertasklist">标准任务预告</p>
-        <TaskCard v-for="item in lettertasklist" :key="item.id"  :title='item.name' :process='item.process' :account='item.account' :exclusive='item.exclusive' :rest='item.rest'/>
     </div>
 
       <transition name="fade">

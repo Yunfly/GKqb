@@ -12,10 +12,14 @@ import './mock' // mock data
 Vue.use(ElementUI)
 Vue.config.productionTip = false
 
-
 Vue.filter('numeral', function (value) {
   // 返回处理后的值
   return numeral(value).format('0,0.00')
+})
+
+Vue.filter('thousand', function (value) {
+  // 返回处理后的值
+  return numeral(value).format('0,0')
 })
 
 /* eslint-disable no-new */
