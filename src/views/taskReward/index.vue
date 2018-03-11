@@ -1,12 +1,12 @@
 <template>
   <div>
       <div class="header">
-          <router-link class="header-left" :to="{path:'/play'}" tag='div'>
+          <div class="header-left" @click="leaveThisRoute">
               <i class="el-icon-arrow-left"></i>
-          </router-link>
+          </div>
           <div class="header-right">
-              <p class="title">任务奖励 = {{bonus|numeral}}元试玩 <span v-if="exclusive">+{{appDetail.exclusive|numeral}}元专属</span></p>
-              <!--<p>{{countdown|countdownFormat}}</p>-->
+              <p class="title">任务奖励 = {{bonus|numeral}}元试玩 <span v-if="exclusive">+{{exclusiveBonus|numeral}}元专属</span></p>
+              <p v-show="showCountDown">{{countdown|countdownFormat}}</p>
           </div>
       </div>
       <div>
@@ -16,7 +16,7 @@
 
         <div class="app-content">
 <pre>
-一、前往App Store搜索： <span>{{name}}</span>  约第<span>1</span>位
+一、前往App Store搜索： <span>{{name||''}}</span>  约第<span>1</span>位
     找到该图标应用下载安装
 
 二、回本页面，点击<span>开始试玩</span>体验3分钟
@@ -26,21 +26,21 @@
 </pre>
 
           <div class="btn-group">
-            <el-button :disabled="!countdown" @click="handleGoAppStore" type="primary">前往App Store</el-button>
-            <el-button :disabled="!countdown" @click="handleTrying" type="primary">开始试玩</el-button>
-            <el-button type="warning" @click="startPlay">领取奖励</el-button>
+            <el-button @click="handleGoAppStore" type="primary">前往App Store</el-button>
+            <el-button :disabled="!isInstalled" @click="handleTrying" type="primary">开始试玩</el-button>
+            <el-button :disabled="!isInstalled&&!completeTask" type="warning" @click="startPlay">领取奖励</el-button>
           </div>
         </div>
       </div>
-
        <transition name="fade">
-        <RewardModal  v-show="ifShowRewardModal" :appName="name" :bonus="bonus" :exclusiveBonus="exclusiveBonus" @closeModal="handleCloseModal"/>
+        <RewardModal @completeTask="handleCompleteTask"  v-show="ifShowRewardModal" :appName="name" :bonus="bonus" :exclusiveBonus="exclusiveBonus" @closeModal="handleCloseModal"/>
       </transition>
   </div>
 </template>
 <script>
 import RewardModal from '@/components/RewardModal'
-import { fetchTaskItem } from '@/api/user'
+import moment from 'moment'
+import { startUseApp, fetchTaskStatus, completeTask} from '@/api/user'
 export default {
   name: 'task',
   data () {
@@ -53,8 +53,12 @@ export default {
       exclusiveBonus: this.$route.query.exclusiveBonus,
       imageUrl: this.$route.query.icon,
       itunesUrl: this.$route.query.itunesUrl,
+      id: this.$route.query.id,
+      enableDate: parseInt(this.$route.query.enableDate, 10),
       appDetail: {},
-      countdown: 0
+      isInstalled: false,
+      startUseDate: '',
+      timer:''
     }
   },
   components: {
@@ -62,6 +66,7 @@ export default {
   },
   filters: {
     countdownFormat (value) {
+      if (value < 0) return 0
       let h = 0
       let i = 0
       let s = parseInt(value)
@@ -78,21 +83,55 @@ export default {
       return [zero(h), zero(i), zero(s)].join(':')
     }
   },
+  computed: {
+    showCountDown () {
+      return moment(this.enableDate * 1000).isAfter()
+    },
+    countdown : {
+      get: function () {
+        let now = moment()
+        let enableDate = moment(this.enableDate * 1000)
+        return enableDate.diff(now, 'seconds')
+      },
+      set: function () {
+      }
+    },
+    completeTask () {
+      let now = moment()
+      let enableDate = moment(this.enableDate * 1000)
+      return enableDate.diff(now, 'minutes') >= 3
+    }
+  },
   mounted () {
     const self = this
-    fetchTaskItem(this.name).then(res => {
-      const { data } = res
-      this.appDetail = data
-      this.countdown = data.countdown
+    fetchTaskStatus({
+      taskId: this.id
+    }).then(res => {
+      const {data: { data,errcode }} = res
+      if (errcode === 0) {
+        const {isInstall,startUseDate} = JSON.parse(data)
+        this.isInstalled = isInstall
+        this.startUseDate = startUseDate
+      }
     })
-      .then(res => {
-        const t = setInterval(() => {
-          self.countdown--
-          if (!self.countdown) {
-            clearInterval(t)
-          }
-        }, 1000)
+    this.timer = setInterval(()=>{
+      fetchTaskStatus({
+        taskId: this.id
+      }).then(res => {
+        const {data: { data,errcode }} = res
+        if (errcode === 0) {
+          const {isInstall,startUseDate} = JSON.parse(data)
+          this.isInstalled = isInstall
+          this.startUseDate = startUseDate
+        }
       })
+    },3000)
+    const t = setInterval(() => {
+      self.countdown--
+      if (!self.countdown) {
+        clearInterval(t)
+      }
+    }, 1000)
   },
   methods: {
     startPlay () {
@@ -102,14 +141,35 @@ export default {
       this.ifShowRewardModal = false
     },
     handleTrying () {
-      location.href = this.urlScheme
-      window.setTimeout(() => {
-        window.location.href = this.itunesUrl
-      }, 2000)
+      startUseApp({
+        taskId: this.id
+      })
+        .then(() => {
+          location.href = this.urlScheme
+          window.setTimeout(() => {
+            window.location.href = this.itunesUrl
+          }, 2000)
+        })
     },
     handleGoAppStore () {
       location.href = 'itms-apps://'
+    },
+    handleCompleteTask () {
+      completeTask({taskId: this.id})
+        .then(res=>{
+          const {data: { errcode }} = res
+          if (errcode === 0) {
+            this.handleCloseModal()
+          }
+        })
+    },
+    leaveThisRoute () {
+      clearInterval(this.timer)
+      this.$router.push('/play')
     }
+  },
+  destoryed () {
+    console.log(11123)
   }
 }
 </script>

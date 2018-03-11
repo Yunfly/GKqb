@@ -29,3 +29,59 @@ export function fetchTaskItem (id) {
     params: { id }
   })
 }
+
+export function startUseApp (params) {
+  return request({
+    url: '/chaff/v1/task/openapp',
+    method: 'get',
+    params
+  })
+}
+
+export function fetchTaskStatus (params) {
+  return request({
+    url: '/chaff/v1/task/status',
+    method: 'get',
+    params
+  })
+}
+
+export function completeTask (params) {
+  return request({
+    url: '/chaff/v1/task/complete',
+    method: 'get',
+    params
+  })
+}
+
+export function fetchTask (params) {
+  return request({
+    url: '/chaff/v1/task/claim',
+    method: 'get',
+    params
+  })
+}
+
+export function fetchSmsCode (params) {
+  return request({
+    url: '/chaff/v1/user/smscode',
+    method: 'get',
+    params
+  })
+}
+
+export function bindphone (params) {
+  return request({
+    url: '/chaff/v1/user/bindphone',
+    method: 'get',
+    params
+  })
+}
+
+export function fetchUserInfo (params) {
+  return request({
+    url: '/chaff/v1/user/info',
+    method: 'get',
+    params
+  })
+}

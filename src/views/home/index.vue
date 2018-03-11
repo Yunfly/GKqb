@@ -41,7 +41,7 @@
 </template>
 <script>
 import ButtonCard from '@/components/ButtonCard'
-import { fetchCurrent } from '@/api/user'
+import { fetchUserInfo } from '@/api/user'
 export default {
   name: 'home',
   data () {
@@ -55,11 +55,16 @@ export default {
     ButtonCard
   },
   mounted () {
-    fetchCurrent().then(res => {
-      const {data: { account, todayaccount, totalaccount }} = res
-      this.account = account
-      this.todayaccount = todayaccount
-      this.totalaccount = totalaccount
+    fetchUserInfo().then(res => {
+      const {data: { data,errcode }} = res
+      if(errcode === 0) {
+        const {fee} = JSON.parse(data)
+        this.account = fee
+      }
+      // const {data: { account, todayaccount, totalaccount }} = res
+      // this.account = account
+      // this.todayaccount = todayaccount
+      // this.totalaccount = totalaccount
     })
   }
 }

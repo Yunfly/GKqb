@@ -25,7 +25,7 @@
 
             <div class="item-box">
               <p class="title">手机绑定</p>
-              <p class="item" v-bind:style="{color:'#000'}">{{'13699429782'|hiddenPhone}}  <router-link to="/changeBind" tag="i" class="el-icon-edit"></router-link></p>
+              <p class="item" v-bind:style="{color:'#000'}">{{phone|hiddenPhone}}  <router-link to="/changeBind" tag="i" class="el-icon-edit"></router-link></p>
             </div>
 
             <div class="item-box">
@@ -41,17 +41,20 @@
   </div>
 </template>
 <script>
-export default {
+  import { fetchUserInfo } from '@/api/user'
+  export default {
   name: 'play',
   data () {
     return {
       ifShowAppModal: false,
       tasklist: [],
-      lettertasklist: []
+      lettertasklist: [],
+      phone:'',
     }
   },
   filters:{
     hiddenPhone(item){
+      if(!item) return '暂无绑定号码'
       return item.split('').splice(0,3).join('')+'****'+item.split('').splice(7).join('')
 
     }
@@ -59,7 +62,17 @@ export default {
   components: {
   },
   mounted(){
-
+    fetchUserInfo().then(res => {
+      const {data: { data,errcode }} = res
+      if(errcode === 0) {
+        const {mobile} = JSON.parse(data)
+        this.phone = mobile
+      }
+      // const {data: { account, todayaccount, totalaccount }} = res
+      // this.account = account
+      // this.todayaccount = todayaccount
+      // this.totalaccount = totalaccount
+    })
   },
   methods: {
   }

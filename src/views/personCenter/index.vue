@@ -78,6 +78,7 @@
   </div>
 </template>
 <script>
+import { fetchUserInfo } from '@/api/user'
 export default {
   name: 'play',
   data () {
@@ -91,7 +92,6 @@ export default {
   components: {
   },
   mounted(){
-
   },
   methods: {
   }

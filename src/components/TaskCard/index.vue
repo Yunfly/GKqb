@@ -1,5 +1,5 @@
 <template>
-  <div class="normal" @click="$emit('handleClick',item)">
+  <div class="normal" @click="clickMethod">
       <div class="app-logo">
           <img :src="item.icon" alt="">
       </div>
@@ -9,21 +9,37 @@
           <p v-else class="suv-title"><span v-if="item.exclusiveBonus>0">有专属，</span> 剩余{{item.remainCount}}份</p>
       </div>
       <div class="task-reward">
-          +<span>{{item.bonus|numeral}}</span>元
+          +<span>{{item.bonus+(item.exclusiveBonus||0)|numeral}}</span>元
       </div>
   </div>
 </template>
 <script>
+  import { fetchTask } from '@/api/user'
 export default {
   name: 'taskcard',
-  props: ['title', 'rest', 'exclusive', 'account', 'item'],
+  props: ['title', 'rest', 'exclusive', 'account', 'item','turn'],
   filters: {
     words (value) {
       return `${value[0]}***`
     }
   },
-  mounted(){
-    console.log(this)
+  methods:{
+    clickMethod () {
+      const self = this;
+      fetchTask({taskId: this.item.id})
+        .then((res) => {
+          const {data: { errcode }} = res
+          if (errcode === 0 || errcode === 100102) {
+            if (self.turn) {
+              self.$emit('handleClick', self.item)
+            }
+          }
+          if (errcode === 100101) {
+            alert('无领取名额')
+          }
+        })
+
+    }
   }
 }
 </script>

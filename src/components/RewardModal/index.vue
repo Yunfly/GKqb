@@ -9,7 +9,7 @@
           <p>试玩赚钱</p>
           <p>{{appName}}</p>
         </div>
-        <el-button type="warning" class="btn" @click="openAssistant">打开助手</el-button>
+        <el-button type="warning" class="btn" @click="openAssistant">完成任务</el-button>
       </div>
   </div>
 </template>
@@ -20,11 +20,7 @@ export default {
   props: ['appName', 'bonus', 'exclusiveBonus'],
   methods: {
     openAssistant () {
-      // window.location.href = 'com.baidu.tieba://' // ios app协议
-      // window.setTimeout(() => {
-      //   window.location.href = 'https://itunes.apple.com/cn/app/id477927812'
-      // }, 2000)
-      location.href = 'chaff://'
+      this.$emit('completeTask')
     },
     handleCloseModal () {
       this.$emit('closeModal')
