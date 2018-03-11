@@ -106,15 +106,15 @@ export default {
 
 <style>
   .el-input__inner {
-    border: none;
-    border-bottom: 1px solid;
-    border-radius: 0;
+    border: none!important;
+    border-bottom: 1px solid!important;
+    border-radius: 0!important;
   }
   .el-message {
-    min-width: 200px;
-    left: 45%;
-    top: 20%;
-    border: none;
+    min-width: 200px!important;
+    left: 45%!important;
+    top: 20%!important;
+    border: none!important;
   }
   .el-message--success, .el-message--error{
     margin: 0 20px;
