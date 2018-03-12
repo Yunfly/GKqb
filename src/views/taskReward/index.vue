@@ -24,11 +24,10 @@
 
 三、满足条件后，回本页面<span>领取奖励</span>
 </pre>
-
           <div class="btn-group">
             <el-button @click="handleGoAppStore" type="primary">前往App Store</el-button>
-            <el-button :disabled="!isInstalled" @click="handleTrying" type="primary">开始试玩</el-button>
-            <el-button :disabled="!isInstalled&&!completeTask" type="warning" @click="startPlay">领取奖励</el-button>
+            <el-button @click="handleTrying" type="primary">开始试玩</el-button>
+            <el-button :disabled="!completeTask||countdown<0" type="warning" @click="startPlay">领取奖励</el-button>
           </div>
         </div>
       </div>
@@ -56,7 +55,6 @@ export default {
       id: this.$route.query.id,
       enableDate: parseInt(this.$route.query.enableDate, 10),
       appDetail: {},
-      isInstalled: false,
       startUseDate: '',
       timer:''
     }
@@ -98,8 +96,8 @@ export default {
     },
     completeTask () {
       let now = moment()
-      let enableDate = moment(this.enableDate * 1000)
-      return enableDate.diff(now, 'minutes') >= 3
+      let startUseDate = moment(this.startUseDate * 1000)
+      return now.diff(startUseDate, 'minutes') >= 3
     }
   },
   mounted () {
@@ -109,8 +107,7 @@ export default {
     }).then(res => {
       const {data: { data,errcode }} = res
       if (errcode === 0) {
-        const {isInstall,startUseDate} = JSON.parse(data)
-        this.isInstalled = isInstall
+        const {startUseDate} = JSON.parse(data)
         this.startUseDate = startUseDate
       }
     })
@@ -156,10 +153,14 @@ export default {
     },
     handleCompleteTask () {
       completeTask({taskId: this.id})
-        .then(res=>{
+        .then(res => {
           const {data: { errcode }} = res
           if (errcode === 0) {
-            this.handleCloseModal()
+            this.$message({
+              message: '领取成功',
+              type: 'success',
+              onClose:()=> this.$router.push('/play')
+            })
           }
         })
     },
@@ -167,9 +168,6 @@ export default {
       clearInterval(this.timer)
       this.$router.push('/play')
     }
-  },
-  destoryed () {
-    console.log(11123)
   }
 }
 </script>

@@ -17,9 +17,17 @@ service.interceptors.request.use(config => {
   Promise.reject(error)
 })
 
-// respone interceptor
+// 回调检测
 service.interceptors.response.use(
-  response => response,
+  response => {
+    if (response.data.errcode === 200001) {
+      alert('钥匙app访问服务器网络错误 error:200001')
+    }
+    if (response.data.errcode === 200000) {
+      alert('无效的路径 errorcode:200000')
+    }
+    return response
+  },
   error => {
     console.log('err' + error)// for debug
     return Promise.reject(error)

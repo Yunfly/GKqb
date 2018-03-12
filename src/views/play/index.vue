@@ -13,7 +13,7 @@
 
     <div class="task-list">
       <p class="title">标准任务</p>
-      <TaskCard :turn="true" v-if="item.status!==2" v-for="(item,key) in tasklist" @handleClick='handleTaskItem' :item='item' :key="item.id" />
+      <TaskCard :turn="true" @errNetWord="ifShowAppModal=true" v-if="item.status!==2" v-for="(item,key) in tasklist" @handleClick='handleTaskItem' :item='item' :key="item.id" />
     </div>
     <div class="task-list">
       <p class="title">标准任务预告</p>
@@ -71,7 +71,7 @@ export default {
     },
     fetchTaskListMock () {
       fetchTaskListMock().then(res => {
-        this.ifShowAppModal = false
+        this.ifShowAppModal = true
         const {data: { data, lettertasklist }} = res
         this.tasklist = data.map(item => JSON.parse(item))
         this.lettertasklist = lettertasklist

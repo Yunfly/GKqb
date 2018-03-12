@@ -33,11 +33,15 @@ export default {
             if (self.turn) {
               self.$emit('handleClick', self.item)
             }
+            return
           }
           if (errcode === 100101) {
             alert('无领取名额')
+            return
           }
+          alert('errcode:'+ errcode)
         })
+        .catch(() => self.$emit('errNetWord'))
 
     }
   }

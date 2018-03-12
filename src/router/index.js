@@ -44,6 +44,16 @@ export default new Router({
       component: resolve => {
         require(['../views/cardEarn'], resolve)
       }
+    },{
+      path: '/registerEarn',
+      component: resolve => {
+        require(['../views/registerEarn'], resolve)
+      }
+    },{
+      path: '/taskProcess',
+      component: resolve => {
+        require(['../views/taskProcess'], resolve)
+      }
     }
   ]
 })

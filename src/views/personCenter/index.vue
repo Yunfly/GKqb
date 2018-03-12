@@ -86,7 +86,7 @@ export default {
       ifShowAppModal: false,
       tasklist: [],
       lettertasklist: [],
-      todayaccount:12
+      todayaccount:1
     }
   },
   components: {
