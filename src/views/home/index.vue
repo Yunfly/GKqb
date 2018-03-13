@@ -5,14 +5,14 @@
            <div class="flex">
                 <div >
                     <p class="title">我的资产</p>
-                    <p class="amount">{{account|numeral}}</p>
+                    <p class="amount">{{account||1|numeral}}</p>
                 </div>
                 <div class="home-head">
                     <img src="../../assets/home_head.png">
                     <p>我的</p>
                 </div>
            </div>
-        <p class="title">累计收入：<span>{{todayaccount|numeral}}元</span></p>
+        <p class="title">累计收入：<span>{{todayaccount||1|numeral}}元</span></p>
         <p class="title">今日收入：<span>{{totalaccount|numeral}}元</span></p>
        </router-link>
        <div class="flex img-menu">
@@ -34,7 +34,7 @@
        <br>
        <div class="menu-group">
           <ButtonCard to="/cardEarn" title='办卡赚钱' bgcolor='#5fb985' sub-title='下载应用领取奖励' />
-          <ButtonCard title='注册赚钱' bgcolor='#ffbf67' sub-title='月入2000不是梦' />
+          <ButtonCard to="/registerEarn" title='注册赚钱' bgcolor='#ffbf67' sub-title='月入2000不是梦' />
           <ButtonCard title='每日开奖' bgcolor='#f9734d' tips="即将开放，敬请等待" sub-title='每日免费抽奖' />
        </div>
     </div>
@@ -58,7 +58,7 @@ export default {
     fetchUserInfo().then(res => {
       const {data: { data,errcode }} = res
       if(errcode === 0) {
-        const {fee} = JSON.parse(data)
+        const { fee } = JSON.parse(data)
         this.account = fee
       }
       // const {data: { account, todayaccount, totalaccount }} = res
