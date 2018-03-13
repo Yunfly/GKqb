@@ -30,9 +30,7 @@ service.interceptors.response.use(
   },
   error => {
     console.log('err' + error)// for debug
-    console.log({error})
     if (error.message === 'Network Error') {
-      alert(error.message)
       // location.href = 'chaff://'
     }
     return Promise.reject(error)

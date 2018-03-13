@@ -85,3 +85,10 @@ export function fetchUserInfo (params) {
     params
   })
 }
+
+export function fetchAppDetail (bid) {
+  return request({
+    url: `https://itunes.apple.com/lookup?bid=${bid}`,
+    method: 'get',
+  })
+}

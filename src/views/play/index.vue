@@ -50,8 +50,8 @@ export default {
       this.ifShowAppModal = false
     },
     handleTaskItem (item) {
-      const{name, bonus, urlScheme, icon,id, itunesUrl,enableDate,exclusiveBonus} = item
-      this.fetchTaskList(() => this.$router.push({path: '/task', query: { exclusiveBonus, itunesUrl, icon, name, bonus,urlScheme,enableDate,id }}));
+      const{name, bonus, urlScheme, icon,id, bid,enableDate,exclusiveBonus} = item
+      this.fetchTaskList(() => this.$router.push({path: '/task', query: { exclusiveBonus, bid, icon, name, bonus,urlScheme,enableDate,id }}));
 
     },
     fetchTaskList (successCb,errorCb) {

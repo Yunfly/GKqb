@@ -27,7 +27,7 @@
           <div class="btn-group">
             <el-button @click="handleGoAppStore" type="primary">前往App Store</el-button>
             <el-button @click="handleTrying" type="primary">开始试玩</el-button>
-            <el-button :disabled="!completeTask||countdown<0" type="warning" @click="startPlay">领取奖励</el-button>
+            <el-button :disabled="!isInstalled||!completeTask" type="warning" @click="startPlay">领取奖励</el-button>
           </div>
         </div>
       </div>
@@ -39,7 +39,7 @@
 <script>
 import RewardModal from '@/components/RewardModal'
 import moment from 'moment'
-import { startUseApp, fetchTaskStatus, completeTask} from '@/api/user'
+import { startUseApp, fetchTaskStatus, completeTask, fetchAppDetail} from '@/api/user'
 export default {
   name: 'task',
   data () {
@@ -51,12 +51,14 @@ export default {
       exclusive: this.$route.query.exclusiveBonus > 0,
       exclusiveBonus: this.$route.query.exclusiveBonus,
       imageUrl: this.$route.query.icon,
-      itunesUrl: this.$route.query.itunesUrl,
+      bid: this.$route.query.bid,
       id: this.$route.query.id,
       enableDate: parseInt(this.$route.query.enableDate, 10),
       appDetail: {},
       startUseDate: '',
-      timer: ''
+      itunesUrl: '',
+      timer: '',
+      isInstalled: false
     }
   },
   components: {
@@ -102,6 +104,13 @@ export default {
   },
   mounted () {
     const self = this
+    fetchAppDetail(this.bid)
+      .then(res => {
+        console.log(res)
+        if (res.data.results.length) {
+          this.itunesUrl = res.data.results[0].trackViewUrl
+        }
+      })
     fetchTaskStatus({
       taskId: this.id
     }).then(res => {
@@ -119,6 +128,7 @@ export default {
         if (errcode === 0) {
           const {isInstall, startUseDate} = JSON.parse(data)
           this.isInstalled = isInstall
+          console.log(this.isInstalled)
           this.startUseDate = startUseDate
         }
       })
@@ -142,6 +152,10 @@ export default {
         taskId: this.id
       })
         .then(() => {
+          if (this.urlScheme === 'unknow') {
+            alert('请前往app store 进行下载')
+            return
+          }
           location.href = this.urlScheme
           window.setTimeout(() => {
             window.location.href = this.itunesUrl

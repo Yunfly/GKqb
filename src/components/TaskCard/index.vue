@@ -25,14 +25,13 @@ export default {
   },
   methods: {
     clickMethod () {
+      if (!this.turn) return
       const self = this
       fetchTask({taskId: this.item.id})
         .then((res) => {
           const {data: { errcode }} = res
           if (errcode === 0 || errcode === 100102) {
-            if (self.turn) {
-              self.$emit('handleClick', self.item)
-            }
+            self.$emit('handleClick', self.item)
             return
           }
           if (errcode === 100101) {
@@ -42,10 +41,6 @@ export default {
           alert('errcode:'+ errcode)
         })
         .catch(() => self.$emit('errNetWord'))
-          if (self.turn) {
-            self.$emit('handleClick', self.item)
-          }
-        })
     }
   }
 }
