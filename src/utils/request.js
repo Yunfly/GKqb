@@ -4,7 +4,7 @@ import axios from 'axios'
 console.log(process.env)
 const service = axios.create({
   baseURL: process.env.BASE_API, // api的base_url
-  timeout: 5000, // request timeout
+  timeout: 5000 // request timeout
 })
 
 // request interceptor
@@ -22,6 +22,11 @@ service.interceptors.response.use(
   response => response,
   error => {
     console.log('err' + error)// for debug
+    console.log({error})
+    if (error.message === 'Network Error') {
+      alert(error.message)
+      // location.href = 'chaff://'
+    }
     return Promise.reject(error)
   })
 

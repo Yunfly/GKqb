@@ -14,31 +14,30 @@
   </div>
 </template>
 <script>
-  import { fetchTask } from '@/api/user'
+import { fetchTask } from '@/api/user'
 export default {
   name: 'taskcard',
-  props: ['title', 'rest', 'exclusive', 'account', 'item','turn'],
+  props: ['title', 'rest', 'exclusive', 'account', 'item', 'turn'],
   filters: {
     words (value) {
       return `${value[0]}***`
     }
   },
-  methods:{
+  methods: {
     clickMethod () {
-      const self = this;
+      const self = this
       fetchTask({taskId: this.item.id})
         .then((res) => {
           const {data: { errcode }} = res
-          if (errcode === 0 || errcode === 100102) {
-            if (self.turn) {
-              self.$emit('handleClick', self.item)
-            }
-          }
           if (errcode === 100101) {
             alert('无领取名额')
+            return
+          }
+
+          if (self.turn) {
+            self.$emit('handleClick', self.item)
           }
         })
-
     }
   }
 }

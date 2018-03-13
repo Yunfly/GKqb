@@ -49,7 +49,7 @@ export default {
       name: this.$route.query.name,
       bonus: this.$route.query.bonus,
       urlScheme: this.$route.query.urlScheme,
-      exclusive: this.$route.query.exclusiveBonus>0,
+      exclusive: this.$route.query.exclusiveBonus > 0,
       exclusiveBonus: this.$route.query.exclusiveBonus,
       imageUrl: this.$route.query.icon,
       itunesUrl: this.$route.query.itunesUrl,
@@ -58,7 +58,7 @@ export default {
       appDetail: {},
       isInstalled: false,
       startUseDate: '',
-      timer:''
+      timer: ''
     }
   },
   components: {
@@ -87,7 +87,7 @@ export default {
     showCountDown () {
       return moment(this.enableDate * 1000).isAfter()
     },
-    countdown : {
+    countdown: {
       get: function () {
         let now = moment()
         let enableDate = moment(this.enableDate * 1000)
@@ -107,25 +107,25 @@ export default {
     fetchTaskStatus({
       taskId: this.id
     }).then(res => {
-      const {data: { data,errcode }} = res
+      const {data: { data, errcode }} = res
       if (errcode === 0) {
-        const {isInstall,startUseDate} = JSON.parse(data)
+        const {isInstall, startUseDate} = JSON.parse(data)
         this.isInstalled = isInstall
         this.startUseDate = startUseDate
       }
     })
-    this.timer = setInterval(()=>{
+    this.timer = setInterval(() => {
       fetchTaskStatus({
         taskId: this.id
       }).then(res => {
-        const {data: { data,errcode }} = res
+        const {data: { data, errcode }} = res
         if (errcode === 0) {
-          const {isInstall,startUseDate} = JSON.parse(data)
+          const {isInstall, startUseDate} = JSON.parse(data)
           this.isInstalled = isInstall
           this.startUseDate = startUseDate
         }
       })
-    },3000)
+    }, 3000)
     const t = setInterval(() => {
       self.countdown--
       if (!self.countdown) {
@@ -156,7 +156,7 @@ export default {
     },
     handleCompleteTask () {
       completeTask({taskId: this.id})
-        .then(res=>{
+        .then(res => {
           const {data: { errcode }} = res
           if (errcode === 0) {
             this.handleCloseModal()
