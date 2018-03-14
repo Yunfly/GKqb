@@ -58,7 +58,7 @@ export default {
     fetchUserInfo().then(res => {
       const {data: { data,errcode }} = res
       if(errcode === 0) {
-        const { fee } = JSON.parse(data)
+        const { fee } = data
         this.account = fee
       }
       // const {data: { account, todayaccount, totalaccount }} = res

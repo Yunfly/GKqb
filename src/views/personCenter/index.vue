@@ -92,6 +92,13 @@ export default {
   components: {
   },
   mounted(){
+    fetchUserInfo().then(res => {
+      const {data: {data, errcode}} = res
+      if (errcode === 0) {
+        const {fee} = data
+        this.todayaccount = fee
+      }
+    })
   },
   methods: {
   }

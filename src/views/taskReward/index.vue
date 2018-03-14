@@ -39,7 +39,7 @@
 <script>
 import RewardModal from '@/components/RewardModal'
 import moment from 'moment'
-import { startUseApp, fetchTaskStatus, completeTask, fetchAppDetail} from '@/api/user'
+import { startUseApp, fetchTaskStatus, completeTask, fetchAppDetail } from '@/api/user'
 export default {
   name: 'task',
   data () {
@@ -58,7 +58,8 @@ export default {
       startUseDate: '',
       itunesUrl: '',
       timer: '',
-      isInstalled: false
+      isInstalled: false,
+      completeTask: false
     }
   },
   components: {
@@ -85,7 +86,7 @@ export default {
   },
   computed: {
     showCountDown () {
-      return moment(this.enableDate * 1000).isAfter()
+      return moment(1521030675 * 1000).isAfter()
     },
     countdown: {
       get: function () {
@@ -95,11 +96,6 @@ export default {
       },
       set: function () {
       }
-    },
-    completeTask () {
-      let now = moment()
-      let startUseDate = moment(this.startUseDate * 1000)
-      return now.diff(startUseDate, 'minutes') >= 3
     }
   },
   mounted () {
@@ -128,8 +124,9 @@ export default {
         if (errcode === 0) {
           const {isInstall, startUseDate} = JSON.parse(data)
           this.isInstalled = isInstall
-          console.log(this.isInstalled)
+          let now = moment()
           this.startUseDate = startUseDate
+          this.completeTask = now.diff(moment(this.startUseDate * 1000), 'minutes') >= 3
         }
       })
     }, 3000)

@@ -65,7 +65,7 @@
     fetchUserInfo().then(res => {
       const {data: { data,errcode }} = res
       if(errcode === 0) {
-        const {mobile} = JSON.parse(data)
+        const {mobile} = data
         this.phone = mobile
       }
       // const {data: { account, todayaccount, totalaccount }} = res
