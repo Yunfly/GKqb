@@ -22,6 +22,17 @@ export function fetchTaskListMock () {
   })
 }
 
+export function fetchCancelTask ({taskId}) {
+  return request({
+    url: '/chaff/v1/task/cancel',
+    method: 'get',
+    params: { taskId }
+  })
+}
+
+
+
+
 export function fetchTaskItem (id) {
   return request({
     url: '/taskitem',

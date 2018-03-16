@@ -56,12 +56,12 @@ export default {
     },
     fetchTaskList (successCb,errorCb) {
       //   todo:判断是否开启助手
-      fetchTaskList({count:5,type:0}).then(res => {
+      fetchTaskList({type:0}).then(res => {
         this.ifShowAppModal = false
         const {data: { data }} = res
         this.tasklist = data.map(item => JSON.parse(item))
         successCb ? successCb() : null
-        fetchTaskList({count:5,type:1}).then(result => {
+        fetchTaskList({type:1}).then(result => {
           const {data: { data }} = result
           this.lettertasklist = data.map(item => JSON.parse(item))
         })

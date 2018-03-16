@@ -26,7 +26,7 @@
 </pre>
           <div class="btn-group">
             <el-button @click="handleGoAppStore" type="primary">前往App Store</el-button>
-            <el-button @click="handleTrying" type="primary">开始试玩</el-button>
+            <el-button :disabled="!isInstalled" @click="handleTrying" type="primary">开始试玩</el-button>
             <el-button :disabled="!isInstalled||!completeTask" type="warning" @click="startPlay">领取奖励</el-button>
           </div>
         </div>
@@ -37,9 +37,10 @@
   </div>
 </template>
 <script>
+import { MessageBox } from 'mint-ui';
 import RewardModal from '@/components/RewardModal'
 import moment from 'moment'
-import { startUseApp, fetchTaskStatus, completeTask, fetchAppDetail } from '@/api/user'
+import { startUseApp, fetchTaskStatus, fetchCancelTask, completeTask, fetchAppDetail } from '@/api/user'
 export default {
   name: 'task',
   data () {
@@ -126,7 +127,11 @@ export default {
           this.isInstalled = isInstall
           let now = moment()
           this.startUseDate = startUseDate
-          this.completeTask = now.diff(moment(this.startUseDate * 1000), 'minutes') >= 3
+          if(this.startUseDate){
+            this.completeTask = now.diff(moment(this.startUseDate * 1000), 'minutes') >= 3
+          } else {
+            this.completeTask = false
+          }
         }
       })
     }, 3000)
@@ -176,8 +181,39 @@ export default {
         })
     },
     leaveThisRoute () {
-      clearInterval(this.timer)
-      this.$router.push('/play')
+      const self = this;
+      MessageBox({
+        title: '别贪心',
+        message: '完成或放弃当前任务才能领新的哦?',
+        showCancelButton: true,
+        confirmButtonText:'继续完成',
+        cancelButtonText: '放弃任务'
+      })
+      .then(action => {
+        if(action==='cancel'){
+          fetchCancelTask({taskId: this.id})
+          .then(res=>{
+            const {errcode} = res.data
+            if(errcode === 0){
+              clearInterval(self.timer)
+              self.$router.push('/play')
+              return
+            }
+            if(errcode === 100301){
+              alert('尚未接受该任务')
+              return
+            }
+            if(errcode === 100302){
+              alert('尚未接受该任务')
+              return
+            }
+            alert(`未知报错：errorcode ${errcode}`)           
+          })
+        } else {
+          return
+        }
+        });
+    
     }
   }
 }

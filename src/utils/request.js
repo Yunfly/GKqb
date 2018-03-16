@@ -21,7 +21,7 @@ service.interceptors.request.use(config => {
 service.interceptors.response.use(
   response => {
     if (response.data.errcode === 200001) {
-      alert('钥匙app访问服务器网络错误 error:200001')
+      alert('你的助手未能访问互联网')
     }
     if (response.data.errcode === 200000) {
       alert('无效的路径 errorcode:200000')
