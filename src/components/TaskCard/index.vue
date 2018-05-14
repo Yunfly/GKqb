@@ -1,25 +1,46 @@
 <template>
-  <div class="normal" @click="$emit('handleClick',item)">
+  <div class="normal" @click="clickMethod">
       <div class="app-logo">
-          <img :src="item.imageUrl" alt="">
+          <img :src="item.icon" alt="">
       </div>
       <div class="app-content">
-          <p class="title">{{ title |words}}</p>
-          <p v-if="process" class="process">进行中...</p>
-          <p v-else class="suv-title"><span v-if="exclusive">有专属，</span> 剩余{{rest}}份</p>
+          <p class="title">{{ item.name |words}}</p>
+          <p v-if="item.status===1" class="process">进行中...</p>
+          <p v-else class="suv-title"><span v-if="item.exclusiveBonus>0">有专属，</span> 剩余{{item.remainCount}}份</p>
       </div>
       <div class="task-reward">
-          +<span>{{account|numeral}}</span>元
+          +<span>{{item.bonus+(item.exclusiveBonus||0)|numeral}}</span>元
       </div>
   </div>
 </template>
 <script>
+import { fetchTask } from '@/api/user'
 export default {
   name: 'taskcard',
-  props: ['title', 'rest', 'exclusive', 'process', 'account', 'item'],
+  props: ['title', 'rest', 'exclusive', 'account', 'item', 'turn'],
   filters: {
     words (value) {
       return `${value[0]}***`
+    }
+  },
+  methods: {
+    clickMethod () {
+      if (!this.turn) return
+      const self = this
+      fetchTask({taskId: this.item.id})
+        .then((res) => {
+          const {data: { errcode }} = res
+          if (errcode === 0 || errcode === 100102) {
+            self.$emit('handleClick', self.item)
+            return
+          }
+          if (errcode === 100101) {
+            alert('无领取名额')
+            return
+          }
+          alert('errcode:'+ errcode)
+        })
+        .catch(() => self.$emit('errNetWord'))
     }
   }
 }

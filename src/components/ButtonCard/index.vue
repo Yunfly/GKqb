@@ -1,12 +1,13 @@
 <template>
-  <div class="normal" :style={background:bgcolor}>
-      <div class="flex">
+  <div class="normal" @click="$router.push(to||'#')" :style={background:bgcolor}>
+      <div class="flex" >
         <div>
           <p class="title">{{title}}</p>
           <p class="sub-title">{{subTitle}}</p>
         </div>
     <div>
-     <i class="el-icon-arrow-right"></i>
+      <span v-if="tips">{{tips}}</span>
+      <i v-else class="el-icon-arrow-right"></i>
     </div>
       </div>
   </div>
@@ -14,7 +15,7 @@
 <script>
 export default {
   name: 'ButtonCard',
-  props: ['title', 'subTitle', 'bgcolor']
+  props: ['title', 'subTitle', 'bgcolor', 'tips', 'to']
 }
 </script>
 

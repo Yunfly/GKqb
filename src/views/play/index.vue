@@ -12,10 +12,12 @@
       </div>
 
     <div class="task-list">
-        <p class="title">标准任务</p>
-        <TaskCard v-if="!item.isInstalled" v-for="(item,key) in tasklist" @handleClick='handleTaskItem' :item='item' :key="item.key" :exclusive='item.exclusive' :rest='item.remainCount'  :title='item.appName' :process='item.process' :account='item.bonus'/>
-        <p class="title" v-if="lettertasklist">标准任务预告</p>
-        <TaskCard v-for="item in lettertasklist" :key="item.id"  :title='item.name' :process='item.process' :account='item.account' :exclusive='item.exclusive' :rest='item.rest'/>
+      <p class="title">标准任务</p>
+      <TaskCard :turn="true" @errNetWord="ifShowAppModal=true" v-if="item.status!==2" v-for="(item,key) in tasklist" @handleClick='handleTaskItem' :item='item' :key="item.id" />
+    </div>
+    <div class="task-list">
+      <p class="title">标准任务预告</p>
+      <TaskCard :turn="false" v-if="item.status!==2" v-for="(item,key) in lettertasklist" @handleClick='handleTaskItem' :item='item' :key="item.id" />
     </div>
 
       <transition name="fade">
@@ -26,7 +28,7 @@
 <script>
 import AppModal from '@/components/AppModal'
 import TaskCard from '@/components/TaskCard'
-import { fetchTaskList, fetchTaskListMock } from '@/api/user'
+import { fetchTaskList, fetchTaskListMock, fetchTask } from '@/api/user'
 export default {
   name: 'play',
   data () {
@@ -48,29 +50,28 @@ export default {
       this.ifShowAppModal = false
     },
     handleTaskItem (item) {
-      console.log(item)
-      const{appName, bonus, urlScheme, exclusive, imageUrl, itunesUrl,exclusiveBonus} = item
-      this.fetchTaskList(() => this.$router.push({path: '/task', query: { exclusiveBonus, itunesUrl, imageUrl,exclusive, appName, bonus,urlScheme }}));
+      const{name, bonus, urlScheme, icon,id, bid,enableDate,exclusiveBonus} = item
+      this.fetchTaskList(() => this.$router.push({path: '/task', query: { exclusiveBonus, bid, icon, name, bonus,urlScheme,enableDate,id }}));
 
     },
     fetchTaskList (successCb,errorCb) {
       //   todo:判断是否开启助手
-      fetchTaskList().then(res => {
+      fetchTaskList({type:0}).then(res => {
         this.ifShowAppModal = false
-        const {data: { data, lettertasklist }} = res
+        const {data: { data }} = res
         this.tasklist = data.map(item => JSON.parse(item))
-        console.log(this.tasklist)
         successCb ? successCb() : null
-        this.lettertasklist = lettertasklist
+        fetchTaskList({type:1}).then(result => {
+          const {data: { data }} = result
+          this.lettertasklist = data.map(item => JSON.parse(item))
+        })
       }).catch((err) => {
-       // alert(err)
         errorCb?errorCb():this.ifShowAppModal = true
-
       })
     },
     fetchTaskListMock () {
       fetchTaskListMock().then(res => {
-        this.ifShowAppModal = false
+        this.ifShowAppModal = true
         const {data: { data, lettertasklist }} = res
         this.tasklist = data.map(item => JSON.parse(item))
         this.lettertasklist = lettertasklist

@@ -19,4 +19,23 @@ export default {
   overflow: hidden;
 }
 * { margin: 0}
+ .el-input__inner {
+   border: none!important;
+   border-bottom: 1px solid!important;
+   border-radius: 0!important;
+ }
+.el-message {
+  min-width: 200px!important;
+  left: 45%!important;
+  top: 20%!important;
+  border: none!important;
+}
+.el-message--success, .el-message--error{
+  margin: 0 20px;
+  background: rgba(0,0,0,0.8);
+
+}
+.el-message__content {
+  color: #fff!important;
+}
 </style>
