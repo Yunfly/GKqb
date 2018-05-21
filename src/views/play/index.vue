@@ -13,12 +13,12 @@
 
     <div class="task-list">
       <p class="title">标准任务</p>
-      <TaskCard :turn="true" @errNetWord="ifShowAppModal=true" v-if="item.status!==2" v-for="(item,key) in tasklist" @handleClick='handleTaskItem' :item='item' :key="item.id" />
+      <TaskCard :turn="true" @errNetWord="ifShowAppModal=true" v-for="(item,key) in tasklist" @handleClick='handleTaskItem' :item='item' :key="key" />
     </div>
-    <div class="task-list">
+    <!-- <div class="task-list">
       <p class="title">标准任务预告</p>
       <TaskCard :turn="false" v-if="item.status!==2" v-for="(item,key) in lettertasklist" @handleClick='handleTaskItem' :item='item' :key="item.id" />
-    </div>
+    </div> -->
 
       <transition name="fade">
         <AppModal  v-show="ifShowAppModal" @closeModal="handleCloseModal"/>
@@ -26,67 +26,72 @@
   </div>
 </template>
 <script>
-import AppModal from '@/components/AppModal'
-import TaskCard from '@/components/TaskCard'
-import { fetchTaskList, fetchTaskListMock, fetchTask } from '@/api/user'
+import AppModal from "@/components/AppModal";
+import TaskCard from "@/components/TaskCard";
+import { fetchTaskList, fetchTaskListMock, fetchTask } from "@/api/user";
+import { mapGetters } from "vuex";
 export default {
-  name: 'play',
-  data () {
+  name: "play",
+  data() {
     return {
       ifShowAppModal: false,
       tasklist: [],
       lettertasklist: []
-    }
+    };
   },
   components: {
-    AppModal, TaskCard
+    AppModal,
+    TaskCard
   },
-  mounted(){
-    this.fetchTaskList(null,this.fetchTaskListMock)
-
+  mounted() {
+    this.fetchTaskList(null, this.fetchTaskListMock);
+  },
+  computed: {
+    ...mapGetters(["userInfo"])
   },
   methods: {
-    handleCloseModal () {
-      this.ifShowAppModal = false
+    handleCloseModal() {
+      this.ifShowAppModal = false;
     },
-    handleTaskItem (item) {
-      const{name, bonus, urlScheme, icon,id, bid,enableDate,exclusiveBonus} = item
-      this.fetchTaskList(() => this.$router.push({path: '/task', query: { exclusiveBonus, bid, icon, name, bonus,urlScheme,enableDate,id }}));
-
+    handleTaskItem(item) {
+      console.log({item});
+      this.$router.push({ name: "TaskPage", params: { item } });
+      // const{name, bonus, urlScheme, icon,id, bid,enableDate,exclusiveBonus} = item
+      // this.fetchTaskList(() => this.$router.push({path: '/task', query: { exclusiveBonus, bid, icon, name, bonus,urlScheme,enableDate,id }}));
     },
-    fetchTaskList (successCb,errorCb) {
+    fetchTaskList(successCb, errorCb) {
       //   todo:判断是否开启助手
-      fetchTaskList({type:0}).then(res => {
-        this.ifShowAppModal = false
-        const {data: { data }} = res
-        this.tasklist = data.map(item => JSON.parse(item))
-        successCb ? successCb() : null
-        fetchTaskList({type:1}).then(result => {
-          const {data: { data }} = result
-          this.lettertasklist = data.map(item => JSON.parse(item))
+      fetchTaskList({ userInfo: this.userInfo })
+        .then(res => {
+          this.ifShowAppModal = false;
+          const { apps: data } = res;
+          this.tasklist = data;
+          successCb ? successCb() : null;
         })
-      }).catch((err) => {
-        errorCb?errorCb():this.ifShowAppModal = true
-      })
+        .catch(err => {
+          errorCb ? errorCb() : (this.ifShowAppModal = true);
+        });
     },
-    fetchTaskListMock () {
+    fetchTaskListMock() {
       fetchTaskListMock().then(res => {
-        this.ifShowAppModal = true
-        const {data: { data, lettertasklist }} = res
-        this.tasklist = data.map(item => JSON.parse(item))
-        this.lettertasklist = lettertasklist
-      })
+        this.ifShowAppModal = true;
+        const { data: { data, lettertasklist } } = res;
+        this.tasklist = data.map(item => JSON.parse(item));
+        this.lettertasklist = lettertasklist;
+      });
     }
   }
-}
+};
 </script>
 
 <style lang="less" scoped>
 @import "./index.less";
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .3s;
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s;
 }
-.fade-enter, .fade-leave-to {
+.fade-enter,
+.fade-leave-to {
   opacity: 0;
 }
 </style>

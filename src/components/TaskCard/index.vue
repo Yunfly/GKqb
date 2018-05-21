@@ -14,76 +14,85 @@
   </div>
 </template>
 <script>
-import { fetchTask } from '@/api/user'
+import { fetchTask } from "@/api/user";
+import { mapGetters } from "vuex";
+
 export default {
-  name: 'taskcard',
-  props: ['title', 'rest', 'exclusive', 'account', 'item', 'turn'],
+  name: "taskcard",
+  props: ["item", "turn"],
   filters: {
-    words (value) {
-      return `${value[0]}***`
+    words(value) {
+      if (!!value) {
+        return `${value[0]}***`;
+      } else {
+        return "无法获取app信息";
+      }
     }
   },
+  computed: {
+    ...mapGetters(["userInfo"])
+  },
   methods: {
-    clickMethod () {
-      if (!this.turn) return
-      const self = this
-      fetchTask({taskId: this.item.id})
-        .then((res) => {
-          const {data: { errcode }} = res
-          if (errcode === 0 || errcode === 100102) {
-            self.$emit('handleClick', self.item)
-            return
+    clickMethod() {
+      if (!this.turn) return;
+      const self = this;
+      console.log(111);
+      fetchTask({ apps: [this.item], userInfo: this.userInfo })
+        .then(res => {
+          console.log({ res });
+          const { code, desc } = res;
+          if (code === 0) {
+            self.$emit("handleClick", res);
+            return;
           }
-          if (errcode === 100101) {
-            alert('无领取名额')
-            return
-          }
-          alert('errcode:'+ errcode)
+          // self.$emit("handleClick", self.item);
+
+          alert(desc);
         })
-        .catch(() => self.$emit('errNetWord'))
+        .catch(() => self.$emit("errNetWord"));
     }
   }
-}
+};
 </script>
 
 <style lang="less" scoped>
 .normal {
-    display: flex;
-    margin: 15px;
-    align-items: center;
-    .app-logo {
-        width: 60px;
-        border: 1px solid #eee;
-        padding: 1px;
-        img {
-            width: 100%;
-            height: auto;
-            position: relative;
-            top: 1px;
-        }
+  display: flex;
+  margin: 15px;
+  align-items: center;
+  .app-logo {
+    width: 60px;
+    border: 1px solid #eee;
+    padding: 1px;
+    img {
+      width: 100%;
+      height: auto;
+      position: relative;
+      top: 1px;
     }
-    .app-content {
-        flex: 1;
-        padding-left: 10px;
-        .title {
-            font-size: 1.8rem;
-            line-height: 1.5;
-        }
-        .suv-title {
-            color: #c4c4c4;
-            font-size: 1.4rem;
-        }
+  }
+  .app-content {
+    flex: 1;
+    padding-left: 10px;
+    .title {
+      font-size: 1.8rem;
+      line-height: 1.5;
     }
-    .task-reward {
-        color: #fb724c;
-        span {
-            font-size: 1.8rem;
-            font-weight: 600;
-        }
+    .suv-title {
+      color: #c4c4c4;
+      font-size: 1.4rem;
     }
-    .process {
-        color: #a7c1eb;
-        font-size: 1.4rem;
+  }
+  .task-reward {
+    color: #fb724c;
+    span {
+      font-size: 1.8rem;
+      font-weight: 600;
     }
+  }
+  .process {
+    color: #a7c1eb;
+    font-size: 1.4rem;
+  }
 }
 </style>

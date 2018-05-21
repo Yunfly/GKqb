@@ -3,7 +3,7 @@ import axios from 'axios'
 // create an axios instance
 console.log(process.env)
 const service = axios.create({
-  baseURL: process.env.BASE_API, // api的base_url
+  // baseURL: process.env.BASE_API, // api的base_url
   timeout: 5000 // request timeout
 })
 
@@ -26,7 +26,7 @@ service.interceptors.response.use(
     if (response.data.errcode === 200000) {
       alert('无效的路径 errorcode:200000')
     }
-    return response
+    return response.data
   },
   error => {
     console.log('err' + error)// for debug

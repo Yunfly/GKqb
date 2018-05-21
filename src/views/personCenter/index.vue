@@ -11,7 +11,7 @@
           <div class="info-card">
             <div>
               <p class="title">我的资产</p>
-              <span class="money">{{todayaccount|numeral}}</span> <span class="yuan">元</span>
+              <span class="money">{{userInfo.fee|numeral}}</span> <span class="yuan">元</span>
               <p class="rest"> 有0 笔提现</p>
             </div>
             <div>
@@ -23,7 +23,7 @@
       <div class="content">
         <div class="flex">
           <div>
-            <p>谷壳币：<span class="color-danger">{{todayaccount|numeral}}</span></p>
+            <p>谷壳币：<span class="color-danger">{{userInfo.fee|numeral}}</span></p>
             <p class="sub-title">1谷壳币 = 1元</p>
           </div>
 
@@ -79,6 +79,7 @@
 </template>
 <script>
 import { fetchUserInfo } from '@/api/user'
+import { mapGetters, mapActions } from "vuex";
 export default {
   name: 'play',
   data () {
@@ -89,18 +90,22 @@ export default {
       todayaccount:1
     }
   },
-  components: {
-  },
-  mounted(){
-    fetchUserInfo().then(res => {
-      const {data: {data, errcode}} = res
-      if (errcode === 0) {
-        const {fee} = data
-        this.todayaccount = fee
-      }
-    })
+  computed: {
+    ...mapGetters(["userInfo"])
   },
   methods: {
+    ...mapActions(["saveUserInfo"])
+  },
+  mounted() {
+    if(this.userInfo.user_id) return
+    fetchUserInfo().then(res => {
+      console.log({ res });
+      const { code } = res;
+      if (code === 0) {
+        const { fee, token, user_id } = res;
+        this.saveUserInfo(res);
+      }
+    });
   }
 }
 </script>

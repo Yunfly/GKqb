@@ -15,12 +15,13 @@
           <div>
             <div class="item-box">
               <p class="title">谷壳ID</p>
-              <p class="item">53163140</p>
+              <p class="item">{{userInfo.user_id}}</p>
             </div>
 
             <div class="item-box">
               <p class="title">昵称</p>
-              <p class="item">暂无昵称</p>
+              <p class="item" v-bind:style="{color:'#000'}">{{userInfo.user_name||'暂无昵称'}}  <span tag="i" @click="changeUserName" class="el-icon-edit"></span></p>
+
             </div>
 
             <div class="item-box">
@@ -41,50 +42,78 @@
   </div>
 </template>
 <script>
-  import { fetchUserInfo } from '@/api/user'
-  export default {
-  name: 'play',
-  data () {
+import { fetchUserInfo,changeUserName } from "@/api/user";
+import { mapGetters, mapActions } from "vuex";
+import { MessageBox } from "mint-ui";
+
+export default {
+  name: "play",
+  data() {
     return {
       ifShowAppModal: false,
       tasklist: [],
       lettertasklist: [],
-      phone:'',
+      phone: ""
+    };
+  },
+  filters: {
+    hiddenPhone(item) {
+      if (!item) return "暂无绑定号码";
+      return (
+        item
+          .split("")
+          .splice(0, 3)
+          .join("") +
+        "****" +
+        item
+          .split("")
+          .splice(7)
+          .join("")
+      );
     }
   },
-  filters:{
-    hiddenPhone(item){
-      if(!item) return '暂无绑定号码'
-      return item.split('').splice(0,3).join('')+'****'+item.split('').splice(7).join('')
-
-    }
-  },
-  components: {
-  },
-  mounted(){
-    fetchUserInfo().then(res => {
-      const {data: { data,errcode }} = res
-      if(errcode === 0) {
-        const {mobile} = data
-        this.phone = mobile
-      }
-      // const {data: { account, todayaccount, totalaccount }} = res
-      // this.account = account
-      // this.todayaccount = todayaccount
-      // this.totalaccount = totalaccount
-    })
+  computed: {
+    ...mapGetters(["userInfo"])
   },
   methods: {
+    ...mapActions(["saveUserInfo"]),
+    changeUserName() {
+      MessageBox.prompt('请输入昵称').then(({ value, action }) => {
+        console.log({value, action});
+        changeUserName({
+          userInfo:this.userInfo,
+          value
+        }).then(res=>{
+          if(res.code===0){
+
+          } else {
+            alert(res.desc)
+          }
+        })
+      });
+    }
+  },
+  mounted() {
+    if(this.userInfo.user_id) return
+    fetchUserInfo().then(res => {
+      const { code } = res;
+      if (code === 0) {
+        const { fee, token, user_id } = res;
+        this.saveUserInfo(res);
+      }
+    });
   }
-}
+};
 </script>
 
 <style lang="less" scoped>
 @import "./index.less";
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .3s;
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s;
 }
-.fade-enter, .fade-leave-to {
+.fade-enter,
+.fade-leave-to {
   opacity: 0;
 }
 </style>

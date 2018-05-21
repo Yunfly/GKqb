@@ -19,6 +19,7 @@ export default new Router({
     },
     {
       path: '/task',
+      name: 'TaskPage',
       component: resolve => {
         require(['../views/taskReward'], resolve)
       }
@@ -34,22 +35,22 @@ export default new Router({
       component: resolve => {
         require(['../views/setting'], resolve)
       }
-    },{
+    }, {
       path: '/changeBind',
       component: resolve => {
         require(['../views/changeBind'], resolve)
       }
-    },{
+    }, {
       path: '/cardEarn',
       component: resolve => {
         require(['../views/cardEarn'], resolve)
       }
-    },{
+    }, {
       path: '/registerEarn',
       component: resolve => {
         require(['../views/registerEarn'], resolve)
       }
-    },{
+    }, {
       path: '/taskProcess',
       component: resolve => {
         require(['../views/taskProcess'], resolve)

@@ -10,7 +10,12 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+      '/user_message': {
+        target: 'http://39.104.175.45:8081/',
+        changeOrigin:true,   //set the option changeOrigin to true for name-based virtual hosted sites
+      },
+    },
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST

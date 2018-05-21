@@ -5,7 +5,7 @@
            <div class="flex">
                 <div >
                     <p class="title">我的资产</p>
-                    <p class="amount">{{account||1|numeral}}</p>
+                    <p class="amount">{{userInfo.fee||1|numeral}}</p>
                 </div>
                 <div class="home-head">
                     <img src="../../assets/home_head.png">
@@ -40,34 +40,38 @@
     </div>
 </template>
 <script>
-import ButtonCard from '@/components/ButtonCard'
-import { fetchUserInfo } from '@/api/user'
+import ButtonCard from "@/components/ButtonCard";
+import { fetchUserInfo } from "@/api/user";
+import { mapGetters, mapActions } from "vuex";
 export default {
-  name: 'home',
-  data () {
+  name: "home",
+  data() {
     return {
-      account: '',
-      todayaccount: '',
-      totalaccount: ''
-    }
+      todayaccount: "",
+      totalaccount: ""
+    };
   },
   components: {
     ButtonCard
   },
-  mounted () {
+  computed: {
+    ...mapGetters(["userInfo"])
+  },
+  methods: {
+    ...mapActions(["saveUserInfo"])
+  },
+  mounted() {
+    if(this.userInfo.user_id) return
     fetchUserInfo().then(res => {
-      const {data: { data,errcode }} = res
-      if(errcode === 0) {
-        const { fee } = data
-        this.account = fee
+      console.log({ res });
+      const { code } = res;
+      if (code === 0) {
+        const { fee, token, user_id } = res;
+        this.saveUserInfo(res);
       }
-      // const {data: { account, todayaccount, totalaccount }} = res
-      // this.account = account
-      // this.todayaccount = todayaccount
-      // this.totalaccount = totalaccount
-    })
+    });
   }
-}
+};
 </script>
 <style lang="less" scoped>
 @import "./index.less";

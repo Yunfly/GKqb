@@ -1,39 +1,55 @@
 import request from '@/utils/request'
 
-export function fetchCurrent () {
+export function fetchCurrent() {
   return request({
-    url: '/user/current',
-    method: 'get'
+    url: '/user_message',
+    method: 'post',
+    data: {
+      'msg_id': 21,
+      token: 'dd1f8a4b-c6ff-41ce-c10d-0839fc4e3610',
+      user_id: '5b02f52ff0988a9e7fd7cf34'
+    }
   })
 }
 
-export function fetchTaskList (params) {
-  return request({
-    url: '/chaff/v1/task/list',
-    method: 'get',
-    params
+export async function fetchTaskList({ userInfo }) {
+  const { user_id, token } = userInfo
+  const response = await request({
+    url: '/user_message',
+    method: 'post',
+    data: {
+      'msg_id': 31,
+      user_id,
+      token
+    }
   })
+  return response
 }
 
-export function fetchTaskListMock () {
+export function fetchTaskListMock() {
   return request({
     url: '/tasklist',
     method: 'get'
   })
 }
 
-export function fetchCancelTask ({taskId}) {
-  return request({
-    url: '/chaff/v1/task/cancel',
-    method: 'get',
-    params: { taskId }
+export async function fetchCancelTask({ userInfo }) {
+  const { user_id, token } = userInfo
+  const response = await request({
+    url: '/user_message',
+    method: 'post',
+    data: {
+      'msg_id': 51,
+      user_id,
+      token,
+      desc: '用户取消任务',
+      code: 10542
+    }
   })
+  return response
 }
 
-
-
-
-export function fetchTaskItem (id) {
+export function fetchTaskItem(id) {
   return request({
     url: '/taskitem',
     method: 'get',
@@ -41,7 +57,7 @@ export function fetchTaskItem (id) {
   })
 }
 
-export function startUseApp (params) {
+export function startUseApp(params) {
   return request({
     url: '/chaff/v1/task/openapp',
     method: 'get',
@@ -49,7 +65,7 @@ export function startUseApp (params) {
   })
 }
 
-export function fetchTaskStatus (params) {
+export function fetchTaskStatus(params) {
   return request({
     url: '/chaff/v1/task/status',
     method: 'get',
@@ -57,7 +73,7 @@ export function fetchTaskStatus (params) {
   })
 }
 
-export function completeTask (params) {
+export function completeTask(params) {
   return request({
     url: '/chaff/v1/task/complete',
     method: 'get',
@@ -65,41 +81,88 @@ export function completeTask (params) {
   })
 }
 
-export function fetchTask (params) {
+export function fetchTask({ userInfo, apps }) {
+  const { user_id, token } = userInfo
   return request({
-    url: '/chaff/v1/task/claim',
-    method: 'get',
-    params
+    url: '/user_message',
+    method: 'post',
+    data: {
+      'msg_id': 41,
+      user_id,
+      token,
+      apps
+    }
   })
 }
 
-export function fetchSmsCode (params) {
+export async function fetchSmsCode({ userInfo, mobile }) {
+  const { user_id, token } = userInfo
+  const response = await request({
+    url: '/user_message',
+    method: 'post',
+    data: {
+      msg_id: 11,
+      user_id,
+      token,
+      idfa: 'idfa000001',
+      mobile: mobile.toString()
+    }
+  })
+  return response
+}
+
+export async function bindphone({ userInfo, mobile, sms }) {
+  const { user_id, token } = userInfo
+  const response = await request({
+    url: '/user_message',
+    method: 'post',
+    data: {
+      msg_id: 13,
+      user_id,
+      token,
+      sms,
+      mobile: mobile.toString()
+    }
+  })
+  return response
+}
+
+export function fetchUserInfo(params) {
   return request({
-    url: '/chaff/v1/user/smscode',
-    method: 'get',
-    params
+    url: '/user_message',
+    method: 'post',
+    data: { 'msg_id': 1, 'idfa': 'idfa000001' }
   })
 }
 
-export function bindphone (params) {
-  return request({
-    url: '/chaff/v1/user/bindphone',
-    method: 'get',
-    params
+export async function fetchAppDetail({ userInfo }) {
+  // const itunesResponse = await request({
+  //   url: `https://itunes.apple.com/lookup?bid=${bid}`,
+  //   method: 'get'
+  // })
+  const { user_id, token } = userInfo
+  const response = await request({
+    url: '/user_message',
+    method: 'post',
+    data: {
+      'msg_id': 23,
+      user_id,
+      token
+    }
   })
+  return response
 }
 
-export function fetchUserInfo (params) {
+export function changeUserName({ userInfo, value }) {
+  const { user_id, token } = userInfo
   return request({
-    url: '/chaff/v1/user/info',
-    method: 'get',
-    params
-  })
-}
-
-export function fetchAppDetail (bid) {
-  return request({
-    url: `https://itunes.apple.com/lookup?bid=${bid}`,
-    method: 'get',
+    url: '/user_message',
+    method: 'post',
+    data: {
+      'msg_id': 61,
+      user_id,
+      token,
+      user_name: value
+    }
   })
 }

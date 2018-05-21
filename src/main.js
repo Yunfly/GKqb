@@ -5,8 +5,10 @@ import App from './App'
 import router from './router'
 import ElementUI from 'element-ui'
 import Mint from 'mint-ui';
-import 'mint-ui/lib/style.css';
+import 'mint-ui/lib/style.css'
 import numeral from 'numeral'
+import store from './store/store'
+
 import 'element-ui/lib/theme-chalk/index.css'
 
 import './mock' // mock data
@@ -28,6 +30,7 @@ Vue.filter('thousand', function (value) {
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })
