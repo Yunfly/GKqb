@@ -1,4 +1,5 @@
 import axios from 'axios'
+import store from '../store/store'
 
 // create an axios instance
 console.log(process.env)
@@ -30,8 +31,14 @@ service.interceptors.response.use(
   },
   error => {
     console.log('err' + error)// for debug
+    console.log({ error }) // for debug
+    const { response } = error
+    if (response && !(response.status >= 200 && response.status < 300)) {
+      store.commit('CONNECT_STATUS', { connectStatus: false })
+    }
     if (error.message === 'Network Error') {
       // location.href = 'chaff://'
+      store.commit('CONNECT_STATUS', { connectStatus: false })
     }
     return Promise.reject(error)
   })

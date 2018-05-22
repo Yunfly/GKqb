@@ -5,8 +5,8 @@ import homeAPI from './home'
 Mock.mock(/\/user\/current/, 'get', homeAPI.usercurrent)
 Mock.mock(/\/tasklist/, 'get', homeAPI.tasklist)
 Mock.mock(/\/taskitem/, 'get', homeAPI.taskItem)
-Mock.mock(/\/chaff\/v1\/task\/task_end/, 'get', homeAPI.endTaskResponse)
-Mock.mock(/\/chaff\/v1\/task\/task_start/, 'get', homeAPI.task_startList)
-Mock.mock(/\/chaff\/v1\/task\/get_app_bundleID/, 'get', homeAPI.bundleList)
+// Mock.mock(/\/chaff\/v1\/task\/task_end/, 'get', homeAPI.endTaskResponse)
+// Mock.mock(/\/chaff\/v1\/task\/task_start/, 'get', homeAPI.task_startList)
+// Mock.mock(/\/chaff\/v1\/task\/get_app_bundleID/, 'get', homeAPI.bundleList)
 
 export default Mock

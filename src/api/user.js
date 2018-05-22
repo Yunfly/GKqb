@@ -2,9 +2,9 @@ import request from '@/utils/request'
 
 export async function fetchCurrent() {
   const response = await request({
-    url: '/user_message',
-    method: 'post',
-    data: {
+    url: '/chaff/v1/universal/all_api_part',
+    method: 'get',
+    params: {
       'msg_id': 21
     }
   })
@@ -18,15 +18,29 @@ export async function fetchCurrent() {
   }
 }
 
+// 获取服务器任务列表
 export async function fetchTaskList() {
+  const fetchapp = await fetchAppList()
+  let applist;
+  if (fetchapp.code === 0) {
+    applist = fetchapp.appBundleID
+  }
   const response = await request({
-    url: '/user_message',
-    method: 'post',
-    data: {
+    url: '/chaff/v1/universal/all_api_part',
+    method: 'get',
+    params: {
       'msg_id': 31
     }
   })
-  return response
+  let apps = []
+  if (applist.length > 0) {
+    apps = response.apps.filter(x => !applist.includes(x.bundle_id))
+  }
+
+  return {
+    ...response,
+    apps
+  }
 }
 
 export function fetchTaskListMock() {
@@ -38,9 +52,9 @@ export function fetchTaskListMock() {
 
 export async function fetchCancelTask() {
   const response = await request({
-    url: '/user_message',
-    method: 'post',
-    data: {
+    url: '/chaff/v1/universal/all_api_part',
+    method: 'get',
+    params: {
       'msg_id': 51,
       desc: '用户取消任务',
       code: 10542
@@ -76,9 +90,9 @@ export function fetchTaskStatus(params) {
 export async function completeTask() {
 
   const response = await request({
-    url: '/user_message',
-    method: 'post',
-    data: {
+    url: '/chaff/v1/universal/all_api_part',
+    method: 'get',
+    params: {
       'msg_id': 51,
       desc: '',
       code: 0
@@ -97,9 +111,9 @@ export async function completeTask() {
 
 export function fetchTask({ apps }) {
   return request({
-    url: '/user_message',
-    method: 'post',
-    data: {
+    url: '/chaff/v1/universal/all_api_part',
+    method: 'get',
+    params: {
       'msg_id': 41,
       apps
     }
@@ -108,11 +122,10 @@ export function fetchTask({ apps }) {
 
 export async function fetchSmsCode({ mobile }) {
   const response = await request({
-    url: '/user_message',
-    method: 'post',
-    data: {
+    url: '/chaff/v1/universal/all_api_part',
+    method: 'get',
+    params: {
       msg_id: 11,
-      idfa: 'idfa000001',
       mobile: mobile.toString()
     }
   })
@@ -121,9 +134,9 @@ export async function fetchSmsCode({ mobile }) {
 
 export async function bindphone({ mobile, sms }) {
   const response = await request({
-    url: '/user_message',
-    method: 'post',
-    data: {
+    url: '/chaff/v1/user/verify_sms',
+    method: 'get',
+    params: {
       msg_id: 13,
       sms,
       mobile: mobile.toString()
@@ -134,27 +147,34 @@ export async function bindphone({ mobile, sms }) {
 
 export function fetchUserInfo(params) {
   return request({
-    url: '/user_message',
-    method: 'post',
-    data: { 'msg_id': 1, 'idfa': 'idfa000001' }
+    url: '/chaff/v1/universal/all_api_part',
+    method: 'get',
+    params: { 'msg_id': 1 }
   })
 }
+
+// 获取手机已安装的app
+export async function fetchAppList() {
+  const response = await request({
+    url: '/chaff/v1/task/get_app_bundleID',
+    method: 'get'
+  })
+  return response
+}
+
 
 export async function fetchAppDetail() {
   // const itunesResponse = await request({
   //   url: `https://itunes.apple.com/lookup?bid=${bid}`,
   //   method: 'get'
   // })
-  const fetchAppList = await request({
-    url: '/chaff/v1/task/get_app_bundleID',
-    method: 'get'
-  })
-  if (fetchAppList.code !== 0) return alert('无法获取手机已安装的app')
-  const installAppList = fetchAppList.appBundleID
+  const applist = await fetchAppList()
+  if (applist.code !== 0) return alert('无法获取手机已安装的app')
+  const installAppList = applist.appBundleID
   const response = await request({
-    url: '/user_message',
-    method: 'post',
-    data: {
+    url: '/chaff/v1/universal/all_api_part',
+    method: 'get',
+    params: {
       'msg_id': 23
     }
   })
@@ -163,9 +183,9 @@ export async function fetchAppDetail() {
 
 export function changeUserName({ value }) {
   return request({
-    url: '/user_message',
-    method: 'post',
-    data: {
+    url: '/chaff/v1/universal/all_api_part',
+    method: 'get',
+    params: {
       'msg_id': 61,
       user_name: value
     }

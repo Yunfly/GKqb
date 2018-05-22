@@ -5,7 +5,7 @@
               <i class="el-icon-arrow-left"></i>
           </div>
           <div class="header-right">
-              <p class="title">任务奖励 = {{bonus|numeral}}元试玩 <span v-if="exclusive">+{{exclusiveBonus|numeral}}元专属</span></p>
+              <p class="title">任务奖励 = {{item.bonus|numeral}}元试玩 <span v-if="exclusive">+{{exclusiveBonus|numeral}}元专属</span></p>
               <p v-show="showCountDown">{{countdown|countdownFormat}}</p>
           </div>
       </div>
@@ -259,6 +259,10 @@ export default {
         }
       });
     }
+  },
+  beforeDestroy() {
+    clearInterval(this.timer);
+    clearInterval(this.startUseTimer);
   }
 };
 </script>
