@@ -5,9 +5,7 @@ export async function fetchCurrent() {
     url: '/user_message',
     method: 'post',
     data: {
-      'msg_id': 21,
-      token: 'dd1f8a4b-c6ff-41ce-c10d-0839fc4e3610',
-      user_id: '5b02f52ff0988a9e7fd7cf34'
+      'msg_id': 21
     }
   })
   if (response.code === 0) {
@@ -20,15 +18,12 @@ export async function fetchCurrent() {
   }
 }
 
-export async function fetchTaskList({ userInfo }) {
-  const { user_id, token } = userInfo
+export async function fetchTaskList() {
   const response = await request({
     url: '/user_message',
     method: 'post',
     data: {
-      'msg_id': 31,
-      user_id,
-      token
+      'msg_id': 31
     }
   })
   return response
@@ -41,15 +36,12 @@ export function fetchTaskListMock() {
   })
 }
 
-export async function fetchCancelTask({ userInfo }) {
-  const { user_id, token } = userInfo
+export async function fetchCancelTask() {
   const response = await request({
     url: '/user_message',
     method: 'post',
     data: {
       'msg_id': 51,
-      user_id,
-      token,
       desc: '用户取消任务',
       code: 10542
     }
@@ -81,16 +73,13 @@ export function fetchTaskStatus(params) {
   })
 }
 
-export async function completeTask({ userInfo }) {
-  const { user_id, token } = userInfo
+export async function completeTask() {
 
   const response = await request({
     url: '/user_message',
     method: 'post',
     data: {
       'msg_id': 51,
-      user_id,
-      token,
       desc: '',
       code: 0
     }
@@ -106,29 +95,23 @@ export async function completeTask({ userInfo }) {
 
 }
 
-export function fetchTask({ userInfo, apps }) {
-  const { user_id, token } = userInfo
+export function fetchTask({ apps }) {
   return request({
     url: '/user_message',
     method: 'post',
     data: {
       'msg_id': 41,
-      user_id,
-      token,
       apps
     }
   })
 }
 
-export async function fetchSmsCode({ userInfo, mobile }) {
-  const { user_id, token } = userInfo
+export async function fetchSmsCode({ mobile }) {
   const response = await request({
     url: '/user_message',
     method: 'post',
     data: {
       msg_id: 11,
-      user_id,
-      token,
       idfa: 'idfa000001',
       mobile: mobile.toString()
     }
@@ -136,15 +119,12 @@ export async function fetchSmsCode({ userInfo, mobile }) {
   return response
 }
 
-export async function bindphone({ userInfo, mobile, sms }) {
-  const { user_id, token } = userInfo
+export async function bindphone({ mobile, sms }) {
   const response = await request({
     url: '/user_message',
     method: 'post',
     data: {
       msg_id: 13,
-      user_id,
-      token,
       sms,
       mobile: mobile.toString()
     }
@@ -160,7 +140,7 @@ export function fetchUserInfo(params) {
   })
 }
 
-export async function fetchAppDetail({ userInfo }) {
+export async function fetchAppDetail() {
   // const itunesResponse = await request({
   //   url: `https://itunes.apple.com/lookup?bid=${bid}`,
   //   method: 'get'
@@ -171,28 +151,22 @@ export async function fetchAppDetail({ userInfo }) {
   })
   if (fetchAppList.code !== 0) return alert('无法获取手机已安装的app')
   const installAppList = fetchAppList.appBundleID
-  const { user_id, token } = userInfo
   const response = await request({
     url: '/user_message',
     method: 'post',
     data: {
-      'msg_id': 23,
-      user_id,
-      token
+      'msg_id': 23
     }
   })
   return Object.assign({ ...response, installAppList })
 }
 
-export function changeUserName({ userInfo, value }) {
-  const { user_id, token } = userInfo
+export function changeUserName({ value }) {
   return request({
     url: '/user_message',
     method: 'post',
     data: {
       'msg_id': 61,
-      user_id,
-      token,
       user_name: value
     }
   })
