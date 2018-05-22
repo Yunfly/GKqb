@@ -54,7 +54,6 @@ export default {
       this.ifShowAppModal = false;
     },
     handleTaskItem(item) {
-      console.log({item});
       this.$router.push({ name: "TaskPage", params: { item } });
       // const{name, bonus, urlScheme, icon,id, bid,enableDate,exclusiveBonus} = item
       // this.fetchTaskList(() => this.$router.push({path: '/task', query: { exclusiveBonus, bid, icon, name, bonus,urlScheme,enableDate,id }}));

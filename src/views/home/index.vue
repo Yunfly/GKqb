@@ -63,7 +63,6 @@ export default {
   mounted() {
     if(this.userInfo.user_id) return
     fetchUserInfo().then(res => {
-      console.log({ res });
       const { code } = res;
       if (code === 0) {
         const { fee, token, user_id } = res;

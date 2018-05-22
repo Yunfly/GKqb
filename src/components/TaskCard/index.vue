@@ -1,15 +1,15 @@
 <template>
   <div class="normal" @click="clickMethod">
       <div class="app-logo">
-          <img :src="item.icon" alt="">
+          <img :src="item.app_ico" alt="">
       </div>
       <div class="app-content">
-          <p class="title">{{ item.name |words}}</p>
+          <p class="title">{{ item.task_name |words}}</p>
           <p v-if="item.status===1" class="process">进行中...</p>
-          <p v-else class="suv-title"><span v-if="item.exclusiveBonus>0">有专属，</span> 剩余{{item.remainCount}}份</p>
+          <p v-else class="suv-title"><span v-if="item.exclusive_bonus>0">有专属，</span></p>
       </div>
       <div class="task-reward">
-          +<span>{{item.bonus+(item.exclusiveBonus||0)|numeral}}</span>元
+          +<span>{{item.bonus+(item.exclusive_bonus||0)|numeral}}</span>元
       </div>
   </div>
 </template>
@@ -36,18 +36,15 @@ export default {
     clickMethod() {
       if (!this.turn) return;
       const self = this;
-      console.log(111);
       fetchTask({ apps: [this.item], userInfo: this.userInfo })
         .then(res => {
-          console.log({ res });
-          const { code, desc } = res;
-          if (code === 0) {
-            self.$emit("handleClick", res);
-            return;
-          }
-          // self.$emit("handleClick", self.item);
-
-          alert(desc);
+          self.$emit("handleClick", res);
+          // const { code, desc } = res;
+          // if (code === 0) {
+          //   self.$emit("handleClick", res);
+          //   return;
+          // }
+          // alert(desc);
         })
         .catch(() => self.$emit("errNetWord"));
     }

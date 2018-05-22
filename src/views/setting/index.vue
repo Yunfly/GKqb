@@ -79,7 +79,6 @@ export default {
     ...mapActions(["saveUserInfo"]),
     changeUserName() {
       MessageBox.prompt('请输入昵称').then(({ value, action }) => {
-        console.log({value, action});
         changeUserName({
           userInfo:this.userInfo,
           value

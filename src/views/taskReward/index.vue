@@ -48,6 +48,7 @@ import {
   fetchAppDetail
 } from "@/api/user";
 import { mapGetters } from "vuex";
+import { setInterval } from "timers";
 
 export default {
   name: "task",
@@ -62,14 +63,16 @@ export default {
       imageUrl: this.$route.query.icon,
       bid: this.$route.query.bid,
       id: this.$route.query.id,
-      enableDate: parseInt(this.$route.query.enableDate, 10),
+      enableDate: 1526958540,
       appDetail: {},
       startUseDate: "",
       itunesUrl: "",
       timer: "",
+      startUseTimer: "",
       isInstalled: false,
       completeTask: false,
-      item: this.$route.params.item || {}
+      item: this.$route.params.item || {},
+      countdown: 0
     };
   },
   components: {
@@ -97,15 +100,24 @@ export default {
   computed: {
     ...mapGetters(["userInfo"]),
     showCountDown() {
-      return moment(1521030675 * 1000).isAfter();
-    },
-    countdown: {
-      get: function() {
-        let now = moment();
-        let enableDate = moment(this.enableDate * 1000);
-        return enableDate.diff(now, "seconds");
-      },
-      set: function() {}
+      return moment(this.enableDate * 1000).isAfter();
+    }
+    // countdown: {
+    //   get: function() {
+    //     let now = moment();
+    //     let enableDate = moment(this.enableDate * 1000);
+    //     console.log({ enableDate });
+    //     console.log({ asd: enableDate.diff(now, "seconds") });
+    //     return enableDate.diff(now, "seconds");
+    //   },
+    //   set: function() {}
+    // }
+  },
+  watch: {
+    enableDate(val) {
+      let now = moment();
+      let enableDate = moment(this.enableDate * 1000);
+      this.countdown = enableDate.diff(now, "seconds");
     }
   },
   mounted() {
@@ -116,6 +128,7 @@ export default {
           this.itunesUrl = res.url_scheme;
           this.name = res.app_name;
           this.imageUrl = res.app_ico;
+          this.enableDate = res.time_end;
           this.startUseDate = res.time_start;
         } else {
           alert(res.desc);
@@ -135,18 +148,18 @@ export default {
       fetchAppDetail({ userInfo: this.userInfo }).then(res => {
         const { code } = res;
         if (code === 0) {
-          const { time_start } = res;
-          // this.isInstalled = isInstall;
-          let now = moment();
-          console.log(this);
-          this.startUseDate = time_start;
-          if (this.startUseDate) {
-            this.completeTask =
-              now.diff(moment(this.startUseDate * 1000), "minutes") >= 3;
-              console.log({completeTask:this.completeTask});
-          } else {
-            this.completeTask = false;
-          }
+          // const { time_start } = res;
+          this.item = res;
+          this.isInstalled = res.installAppList.includes(this.item.bundle_id);
+          // let now = moment();
+          // this.startUseDate = time_start;
+          // if (this.startUseDate) {
+          //   this.completeTask =
+          //     now.diff(moment(this.startUseDate * 1000), "minutes") >= 3;
+          //   console.log({ completeTask: this.completeTask });
+          // } else {
+          //   this.completeTask = false;
+          // }
         } else {
           clearInterval(this.timer);
         }
@@ -167,33 +180,59 @@ export default {
       this.ifShowRewardModal = false;
     },
     handleTrying() {
+      let self = this;
       startUseApp({
-        taskId: this.id
-      }).then(() => {
-        if (this.urlScheme === "unknow") {
+        bundle_id: this.item.bundle_id
+      }).then(res => {
+        if (res.code !== 0) {
           alert("请前往app store 进行下载");
           return;
+        } else {
+          const { start_time } = res;
+          let now = moment();
+          self.startUseDate = start_time;
+          if (self.startUseDate) {
+            self.completeTask =
+              now.diff(moment(this.startUseDate * 1000), "minutes") >= 3;
+          } else {
+            self.completeTask = false;
+          }
+          self.startUseTimer = setInterval(() => {
+            const { start_time } = res;
+            let now = moment();
+            self.startUseDate = start_time;
+            if (self.startUseDate) {
+              self.completeTask =
+                now.diff(moment(this.startUseDate * 1000), "minutes") >= 3;
+            } else {
+              self.completeTask = false;
+            }
+          }, 3000);
         }
-        location.href = this.urlScheme;
-        window.setTimeout(() => {
-          window.location.href = this.itunesUrl;
-        }, 2000);
+        // location.href = this.item.url_scheme;
+        // window.setTimeout(() => {
+        //   window.location.href = this.itunesUrl;
+        // }, 2000);
       });
     },
     handleGoAppStore() {
       location.href = "itms-apps://";
     },
     handleCompleteTask() {
-      completeTask({ taskId: this.id }).then(res => {
-        const { data: { errcode } } = res;
-        if (errcode === 0) {
-          this.$message({
-            message: "领取成功",
-            type: "success",
-            onClose: () => this.$router.push("/play")
-          });
+      completeTask({ bundle_id: this.bundle_id, userInfo: this.userInfo }).then(
+        res => {
+          const { code } = res;
+          if (code === 0) {
+            this.$message({
+              message: "领取成功",
+              type: "success",
+              onClose: () => this.$router.push("/play")
+            });
+          } else {
+            alert(res.msg);
+          }
         }
-      });
+      );
     },
     leaveThisRoute() {
       const self = this;
@@ -206,7 +245,6 @@ export default {
       }).then(action => {
         if (action === "cancel") {
           fetchCancelTask({ userInfo: this.userInfo }).then(res => {
-            console.log({ res });
             const { code } = res;
             if (code === 0) {
               clearInterval(self.timer);

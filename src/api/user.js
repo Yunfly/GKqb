@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
-export function fetchCurrent() {
-  return request({
+export async function fetchCurrent() {
+  const response = await request({
     url: '/user_message',
     method: 'post',
     data: {
@@ -10,6 +10,14 @@ export function fetchCurrent() {
       user_id: '5b02f52ff0988a9e7fd7cf34'
     }
   })
+  if (response.code === 0) {
+    return response
+  } else {
+    return request({
+      url: '/chaff/v1/user/login_idfa',
+      method: 'get'
+    })
+  }
 }
 
 export async function fetchTaskList({ userInfo }) {
@@ -59,7 +67,7 @@ export function fetchTaskItem(id) {
 
 export function startUseApp(params) {
   return request({
-    url: '/chaff/v1/task/openapp',
+    url: '/chaff/v1/task/task_start',
     method: 'get',
     params
   })
@@ -73,12 +81,29 @@ export function fetchTaskStatus(params) {
   })
 }
 
-export function completeTask(params) {
-  return request({
-    url: '/chaff/v1/task/complete',
-    method: 'get',
-    params
+export async function completeTask({ userInfo }) {
+  const { user_id, token } = userInfo
+
+  const response = await request({
+    url: '/user_message',
+    method: 'post',
+    data: {
+      'msg_id': 51,
+      user_id,
+      token,
+      desc: '',
+      code: 0
+    }
   })
+  if (response.code === 0) {
+    return request({
+      url: '/chaff/v1/task/task_end',
+      method: 'get'
+    })
+  } else {
+    alert(response.desc)
+  }
+
 }
 
 export function fetchTask({ userInfo, apps }) {
@@ -140,6 +165,12 @@ export async function fetchAppDetail({ userInfo }) {
   //   url: `https://itunes.apple.com/lookup?bid=${bid}`,
   //   method: 'get'
   // })
+  const fetchAppList = await request({
+    url: '/chaff/v1/task/get_app_bundleID',
+    method: 'get'
+  })
+  if (fetchAppList.code !== 0) return alert('无法获取手机已安装的app')
+  const installAppList = fetchAppList.appBundleID
   const { user_id, token } = userInfo
   const response = await request({
     url: '/user_message',
@@ -150,7 +181,7 @@ export async function fetchAppDetail({ userInfo }) {
       token
     }
   })
-  return response
+  return Object.assign({ ...response, installAppList })
 }
 
 export function changeUserName({ userInfo, value }) {
