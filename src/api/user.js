@@ -160,7 +160,6 @@ export async function fetchAppList() {
   return response
 }
 
-
 export async function fetchAppDetail() {
   // const itunesResponse = await request({
   //   url: `https://itunes.apple.com/lookup?bid=${bid}`,
