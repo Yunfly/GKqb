@@ -21,9 +21,9 @@ export async function fetchCurrent() {
 // 获取服务器任务列表
 export async function fetchTaskList() {
   const fetchapp = await fetchAppList()
-  let applist;
+  let applist = []
   if (fetchapp.code === 0) {
-    applist = fetchapp.appBundleID
+    applist = fetchapp.appBundleID || []
   }
   const response = await request({
     url: '/chaff/v1/universal/all_api_part',
@@ -33,9 +33,7 @@ export async function fetchTaskList() {
     }
   })
   let apps = []
-  if (applist.length > 0) {
-    apps = response.apps.filter(x => !applist.includes(x.bundle_id))
-  }
+  apps = response.apps.filter(x => !applist.includes(x.bundle_id))
 
   return {
     ...response,

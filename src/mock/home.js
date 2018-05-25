@@ -20,10 +20,8 @@ const endTaskResponse = {
   'code': 0,
   'bundle_id': 'com.apple.mobileSafari'
 }
-const bundleList = {
-  'code': 0,
-  'appBundleID': ['com.moretop.heixiu', 'com.pd.A4Player', 'com.flying.catchfish']
-}
+const bundleList = { "code": 0, "appBundleID": [] }
+const allApplist = { "apps": [{ "task_name": "大众点评", "bundle_id": "com.dianping.dpscope", "exclusive_bonus": 0, "bonus": 200, "app_ico": "https:\/\/is5-ssl.mzstatic.com\/image\/thumb\/Purple125\/v4\/51\/c6\/dc\/51c6dcb7-5add-c1c7-71d6-51c67f4086fb\/source\/512x512bb.jpg" }, { "task_name": "豆瓣", "bundle_id": "com.douban.frodo", "exclusive_bonus": 0, "bonus": 130, "app_ico": "https:\/\/is4-ssl.mzstatic.com\/image\/thumb\/Purple125\/v4\/9b\/6a\/69\/9b6a693f-68eb-4030-6a51-f24f6fdd4e4b\/source\/512x512bb.jpg" }], "msg_id": 32, "code": 0 }
 export default {
   usercurrent: () => ({
     account: 12,
@@ -31,6 +29,7 @@ export default {
     todayaccount: 14
   }),
   tasklist,
+  allApplist,
   taskItem,
   task_startList,
   endTaskResponse,
