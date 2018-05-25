@@ -34,10 +34,12 @@ service.interceptors.response.use(
     console.log({ error }) // for debug
     const { response } = error
     if (response && !(response.status >= 200 && response.status < 300)) {
+      alert('网络连接异常', response.status)
       store.commit('CONNECT_STATUS', { connectStatus: false })
     }
     if (error.message === 'Network Error') {
       // location.href = 'chaff://'
+      alert('网络连接超时')
       store.commit('CONNECT_STATUS', { connectStatus: false })
     }
     return Promise.reject(error)
