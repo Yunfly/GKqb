@@ -20,11 +20,6 @@ export async function fetchCurrent() {
 
 // 获取服务器任务列表
 export async function fetchTaskList() {
-  const fetchapp = await fetchAppList()
-  let applist = []
-  if (fetchapp.code === 0) {
-    applist = fetchapp.appBundleID || []
-  }
   const response = await request({
     url: '/chaff/v1/universal/all_api_part',
     method: 'get',
@@ -32,9 +27,23 @@ export async function fetchTaskList() {
       'msg_id': 31
     }
   })
-  let apps = []
-  apps = response.apps.filter(x => !applist.includes(x.bundle_id))
 
+  let appBundleIDList = []
+  if (response.code === 0) {
+    appBundleIDList = response.apps.map(x => x.bundle_id)
+  }
+  const fetchapp = await fetchAppList({ appBundleIDList })
+  let applist = []
+  if (fetchapp.code === 0) {
+    applist = fetchapp.apps || []
+  }
+
+  let apps = []
+  apps = response.apps.filter(x => {
+    return !applist[x.bundle_id] || false
+  })
+
+  console.log({ apps });
   return {
     ...response,
     apps
@@ -152,20 +161,24 @@ export function fetchUserInfo(params) {
 }
 
 // 获取手机已安装的app
-export async function fetchAppList() {
+export async function fetchAppList({ appBundleIDList }) {
   const response = await request({
     url: '/chaff/v1/task/get_app_bundleID',
-    method: 'get'
+    method: 'get',
+    params: {
+      apps: JSON.stringify(appBundleIDList)
+    }
   })
+  alert(`app返回的安装列表${JSON.stringify(response)}`, )
   return response
 }
 
-export async function fetchAppDetail() {
+export async function fetchAppDetail({ bid }) {
   // const itunesResponse = await request({
   //   url: `https://itunes.apple.com/lookup?bid=${bid}`,
   //   method: 'get'
   // })
-  const applist = await fetchAppList()
+  const applist = await fetchAppList({ appBundleIDList: bid })
   if (applist.code !== 0) return alert('无法获取手机已安装的app')
   const installAppList = applist.appBundleID
   const response = await request({

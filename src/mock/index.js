@@ -11,4 +11,3 @@ import homeAPI from './home'
 // Mock.mock(/\/chaff\/v1\/universal\/all_api_part/, 'get', homeAPI.allApplist)
 
 export default Mock
-// 

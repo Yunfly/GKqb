@@ -145,12 +145,18 @@ export default {
     //   }
     // });
     this.timer = setInterval(() => {
-      fetchAppDetail({ userInfo: this.userInfo }).then(res => {
+      fetchAppDetail({
+        userInfo: this.userInfo,
+        bid: this.item.bundle_id
+      }).then(res => {
         const { code } = res;
         if (code === 0) {
           // const { time_start } = res;
           this.item = res;
-          this.isInstalled = res.installAppList.includes(this.item.bundle_id);
+          if(!this.item.bundle_id) alert('未获取该应用的bundle_id')
+          this.isInstalled = res.installAppList[this.item.bundle_id]
+            ? true
+            : false;
           // let now = moment();
           // this.startUseDate = time_start;
           // if (this.startUseDate) {
