@@ -178,9 +178,10 @@ export async function fetchAppDetail({ bid }) {
   //   url: `https://itunes.apple.com/lookup?bid=${bid}`,
   //   method: 'get'
   // })
-  const applist = await fetchAppList({ appBundleIDList: bid })
+  alert("appBundleIDList:", bid)
+  const applist = await fetchAppList({ appBundleIDList: [bid] })
   if (applist.code !== 0) return alert('无法获取手机已安装的app')
-  const installAppList = applist.appBundleID
+  const installAppList = applist.apps
   const response = await request({
     url: '/chaff/v1/universal/all_api_part',
     method: 'get',
