@@ -21,9 +21,7 @@ service.interceptors.request.use(config => {
 // 回调检测
 service.interceptors.response.use(
   response => {
-    console.log({ response });
     if (response.data.code !== 0) {
-      alert(response.data.desc)
       if (response.data.code === 100032) {
         location.reload()
       }

@@ -169,7 +169,6 @@ export async function fetchAppList({ appBundleIDList }) {
       apps: JSON.stringify(appBundleIDList)
     }
   })
-  alert(`app返回的安装列表${JSON.stringify(response)}`, )
   return response
 }
 
@@ -178,7 +177,6 @@ export async function fetchAppDetail({ bid }) {
   //   url: `https://itunes.apple.com/lookup?bid=${bid}`,
   //   method: 'get'
   // })
-  alert("appBundleIDList:", bid)
   const applist = await fetchAppList({ appBundleIDList: [bid] })
   if (applist.code !== 0) return alert('无法获取手机已安装的app')
   const installAppList = applist.apps

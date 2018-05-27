@@ -12,7 +12,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '^/chaff': {
-        target: 'http://192.168.1.102:1024',
+        target: 'http://192.168.1.103:1024',
         changeOrigin:true,   //set the option changeOrigin to true for name-based virtual hosted sites
       },
     },
