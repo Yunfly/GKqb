@@ -48,33 +48,34 @@
                 <p>账户设置</p>
               </router-link>
             </el-col>
-            <el-col :span="6">
+            <!-- <el-col :span="6">
               <div class="option-item">
                 <i class="el-icon-mobile-phone"></i>
                 <p>帮助中心</p>
               </div>
-            </el-col>
+            </el-col> -->
             <el-col :span="6">
-              <div class="option-item">
+              <router-link tag="div" to="/about" class="option-item">
                 <i class="el-icon-service"></i>
                 <p>关于谷壳</p>
-              </div>
+              </router-link>
             </el-col>
             <el-col :span="6">
-              <div class="option-item">
+              <router-link tag="div" to="/inroom" class="option-item">
                 <i class="el-icon-location-outline"></i>
                 <p>谷壳入口</p>
-              </div>
+              </router-link>
             </el-col>
             <el-col :span="6">
-              <div class="option-item">
+              <router-link tag="div" to="/changeBind" class="option-item">
                 <i class="el-icon-refresh"></i>
                 <p>切换账号</p>
-              </div>
+              </router-link>
             </el-col>
           </el-row>
         </div>
       </div>
+      <!-- changeBind -->
   </div>
 </template>
 <script>

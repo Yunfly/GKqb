@@ -34,6 +34,9 @@ export default {
   },
   mounted() {
     fetchTaskRecord().then(res => {
+        if (res.code != 0) {
+          return this.$toast(`${res.code}: ${res.desc}`);
+        }
       this.tasklogs = res.tasklogs
     });
   },

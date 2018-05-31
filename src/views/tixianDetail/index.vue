@@ -12,7 +12,7 @@
       <div class="content">
         <div class="item-box w200">
               <p class="title">账号</p>
-              <el-input :maxlength="6"  v-model.trim="account" class="form-input" placeholder="提现账号或手机号"></el-input>
+              <el-input v-model.trim="account" class="form-input" placeholder="提现账号或手机号"></el-input>
             </div>
 
             <div>
@@ -27,10 +27,10 @@
               <br>
                <el-row type="flex" justify="center">
                <el-col :span="12">
-                  <el-radio class="button" v-model="money" :label="50">充50元</el-radio>
+                  <el-radio  class="button" v-model="money" :label="50">充50元</el-radio>
                 </el-col>
                 <el-col :span="12">
-                  <el-radio class="button" v-model="money" :label="100">充100元</el-radio>
+                  <el-radio class="button" :style="{width:'54px'}" v-model="money" :label="100">充100元</el-radio>
                 </el-col>
               </el-row>
               <br>
@@ -78,22 +78,13 @@ export default {
     tixian() {
       const { account, money } = this;
       if (!account) {
-        return this.$message({
-          message: "请输入正确的提现账号",
-          type: "error"
-        });
+        return this.$toast("请输入正确的提现账号");
       }
       tixian({ receipt_type: this.type, account, money }).then(res => {
         if (res.code == 0) {
-          return this.$message({
-            message: "成功",
-            type: "success"
-          });
+          return this.$toast("成功");
         }
-        return this.$message({
-          message: `${res.code}: ${res.desc}`,
-          type: "error"
-        });
+        return this.$toast(`${res.code}: ${res.desc}`);
       });
     }
   }
@@ -158,6 +149,6 @@ export default {
   left: -5px;
 }
 .el-radio__inner {
-  display: none;
+  display: none !important;
 }
 </style>

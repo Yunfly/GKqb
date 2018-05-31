@@ -70,8 +70,18 @@ export default new Router({
       component: resolve => {
         require(['../views/tixianDetail'], resolve)
       }
+    }, {
+      path: '/inroom',
+      component: resolve => {
+        require(['../views/inroom'], resolve)
+      }
+    }, {
+      path: '/about',
+      component: resolve => {
+        require(['../views/about'], resolve)
+      }
     }
   ]
 })
 
-// tixianDetail
+// about
