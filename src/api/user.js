@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import { CLIENT_RENEG_LIMIT } from 'tls';
 
 export async function fetchCurrent() {
   const response = await request({
@@ -94,7 +95,7 @@ export function fetchTaskStatus(params) {
   })
 }
 
-export async function completeTask() {
+export async function completeTask({ bundle_id }) {
 
   const response = await request({
     url: '/chaff/v1/universal/all_api_part',
@@ -108,7 +109,10 @@ export async function completeTask() {
   if (response.code === 0) {
     return request({
       url: '/chaff/v1/task/task_end',
-      method: 'get'
+      method: 'get',
+      params: {
+        bundle_id
+      }
     })
   } else {
     alert(response.desc)
@@ -122,7 +126,7 @@ export function fetchTask({ apps }) {
     method: 'get',
     params: {
       'msg_id': 41,
-      apps
+      'apps': apps[0].bundle_id
     }
   })
 }
@@ -166,7 +170,7 @@ export async function fetchAppList({ appBundleIDList }) {
     url: '/chaff/v1/task/get_app_bundleID',
     method: 'get',
     params: {
-      apps: JSON.stringify(appBundleIDList)
+      apps: appBundleIDList.join(",")
     }
   })
   return response

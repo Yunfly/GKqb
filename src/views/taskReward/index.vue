@@ -154,9 +154,7 @@ export default {
           // const { time_start } = res;
           this.item = res;
           if (!this.item.bundle_id) alert("未获取该应用的bundle_id");
-          this.isInstalled = res.installAppList[res.bundle_id]
-            ? true
-            : false;
+          this.isInstalled = res.installAppList[res.bundle_id] ? true : false;
           // let now = moment();
           // this.startUseDate = time_start;
           // if (this.startUseDate) {
@@ -205,11 +203,10 @@ export default {
           }
           self.startUseTimer = setInterval(() => {
             const { start_time } = res;
-            let now = moment();
+            let now = moment().unix();
             self.startUseDate = start_time;
             if (self.startUseDate) {
-              self.completeTask =
-                now.diff(moment(self.startUseDate * 1000), "minutes") >= 3;
+              self.completeTask = now.diff >= self.item.time_min;
               if (self.completeTask) {
                 clearInterval(self.timer._id);
               }
