@@ -55,6 +55,11 @@ export default new Router({
       component: resolve => {
         require(['../views/taskProcess'], resolve)
       }
+    }, {
+      path: '/taskRecord',
+      component: resolve => {
+        require(['../views/taskRecord'], resolve)
+      }
     }
   ]
 })
