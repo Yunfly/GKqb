@@ -60,6 +60,18 @@ export default new Router({
       component: resolve => {
         require(['../views/taskRecord'], resolve)
       }
+    }, {
+      path: '/cashCenter',
+      component: resolve => {
+        require(['../views/cashCenter'], resolve)
+      }
+    }, {
+      path: '/tixianDetail',
+      component: resolve => {
+        require(['../views/tixianDetail'], resolve)
+      }
     }
   ]
 })
+
+// tixianDetail

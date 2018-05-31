@@ -28,6 +28,46 @@ const bundleList = {
   }
 }
 const allApplist = { "apps": [{ "task_name": "大众点评", "bundle_id": "com.dianping.dpscope", "exclusive_bonus": 0, "bonus": 200, "app_ico": "https:\/\/is5-ssl.mzstatic.com\/image\/thumb\/Purple125\/v4\/51\/c6\/dc\/51c6dcb7-5add-c1c7-71d6-51c67f4086fb\/source\/512x512bb.jpg" }, { "task_name": "豆瓣", "bundle_id": "com.douban.frodo", "exclusive_bonus": 0, "bonus": 130, "app_ico": "https:\/\/is4-ssl.mzstatic.com\/image\/thumb\/Purple125\/v4\/9b\/6a\/69\/9b6a693f-68eb-4030-6a51-f24f6fdd4e4b\/source\/512x512bb.jpg" }], "msg_id": 32, "code": 0 }
+
+const taskRecord = {
+  "msg_id": "task_log",
+  "code": 0,
+  "desc": "成功",
+  "tasklogs": [
+    {
+      "tasklog_id": "5b0e0b0714e9fa57b5a6861e",
+      "bonus": 320,
+      "exclusive_bonus": 310,
+      "task_name": "测试任务",
+      "app_id": "1359091826",
+      "bundle_id": "com.sg.tfsgzsy",
+      "app_name": "塔防三国志手游",
+      "app_ico": "https://xxx.yyy/512x512bb.jpg",
+      "url_scheme": "123",
+      "time_begin": 1524631883,
+      "time_end": 1524718283
+    }
+  ]
+}
+
+const tixian = {
+  "msg_id": "draw_log",
+  "code": 0,
+  "desc": "成功",
+  "drawlogs": [
+    {
+      "drawlog_id": ("5b0e130814e9fa57b5a68706"),
+      "status": 0,
+      "money": 1000,
+      "receipt_type": 1,
+      "pay_type": 1,
+      "account": "12345673278",
+      "order": "423414141",
+      "time_begin": 123,
+      "time_end": 224
+    }
+  ]
+}
 export default {
   usercurrent: () => ({
     account: 12,
@@ -39,5 +79,7 @@ export default {
   taskItem,
   task_startList,
   endTaskResponse,
-  bundleList
+  bundleList,
+  taskRecord,
+  tixian
 }

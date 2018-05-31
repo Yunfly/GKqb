@@ -204,3 +204,27 @@ export function changeUserName({ value }) {
     }
   })
 }
+
+export function fetchTaskRecord() {
+  return request({
+    url: '/chaff/v1/universal/all_api_part',
+    method: 'get',
+    params: {
+      'msg_id': 81
+    }
+  })
+}
+
+export function tixian({ receipt_type, account, money }) {
+  console.log({receipt_type, account, money})
+  return request({
+    url: '/chaff/v1/universal/all_api_part',
+    method: 'get',
+    params: {
+      'msg_id': 71,
+      receipt_type,
+      account,
+      money
+    }
+  })
+}

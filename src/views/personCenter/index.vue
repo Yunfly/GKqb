@@ -28,7 +28,7 @@
           </div>
 
           <div>
-            <el-button type="danger" round size="mini">立即提现</el-button>
+            <el-button type="danger" round size="mini" @click="$router.push('/cashCenter')">立即提现</el-button>
           </div>
         </div>
 
