@@ -51,13 +51,6 @@ export async function fetchTaskList() {
   }
 }
 
-export function fetchTaskListMock() {
-  return request({
-    url: '/tasklist',
-    method: 'get'
-  })
-}
-
 export async function fetchCancelTask() {
   const response = await request({
     url: '/chaff/v1/universal/all_api_part',
@@ -205,18 +198,19 @@ export function changeUserName({ value }) {
   })
 }
 
-export function fetchTaskRecord() {
+export function fetchTaskRecord(id) {
   return request({
     url: '/chaff/v1/universal/all_api_part',
     method: 'get',
     params: {
-      'msg_id': 81
+      'msg_id': 81,
+      page_id: id
     }
   })
 }
 
 export function tixian({ receipt_type, account, money }) {
-  console.log({receipt_type, account, money})
+  console.log({ receipt_type, account, money })
   return request({
     url: '/chaff/v1/universal/all_api_part',
     method: 'get',

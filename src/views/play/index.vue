@@ -28,7 +28,7 @@
 <script>
 import AppModal from "@/components/AppModal";
 import TaskCard from "@/components/TaskCard";
-import { fetchTaskList, fetchTaskListMock, fetchTask } from "@/api/user";
+import { fetchTaskList, fetchTask } from "@/api/user";
 import { mapGetters } from "vuex";
 export default {
   name: "play",
@@ -44,7 +44,7 @@ export default {
     TaskCard
   },
   mounted() {
-    this.fetchTaskList(null, this.fetchTaskListMock);
+    this.fetchTaskList();
   },
   computed: {
     ...mapGetters(["userInfo"])
@@ -65,19 +65,10 @@ export default {
           this.ifShowAppModal = false;
           const { apps: data } = res;
           this.tasklist = data;
-          successCb ? successCb() : null;
         })
         .catch(err => {
-          errorCb ? errorCb() : (this.ifShowAppModal = true);
+          this.ifShowAppModal = true;
         });
-    },
-    fetchTaskListMock() {
-      fetchTaskListMock().then(res => {
-        this.ifShowAppModal = true;
-        const { data: { data, lettertasklist } } = res;
-        this.tasklist = data.map(item => JSON.parse(item));
-        this.lettertasklist = lettertasklist;
-      });
     }
   }
 };
