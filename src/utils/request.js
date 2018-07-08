@@ -1,16 +1,16 @@
 import axios from 'axios'
-import { Message } from 'element-ui'
+import store from '../store/store'
 
 // create an axios instance
+console.log(process.env)
 const service = axios.create({
   baseURL: process.env.BASE_API, // api的base_url
-  timeout: 5000 // request timeout
+  timeout: 15000 // request timeout
 })
 
 // request interceptor
 service.interceptors.request.use(config => {
   // Do something before request is sent
-
   return config
 }, error => {
   // Do something with request error
@@ -18,16 +18,35 @@ service.interceptors.request.use(config => {
   Promise.reject(error)
 })
 
-// respone interceptor
+// 回调检测
 service.interceptors.response.use(
-  response => response,
+  response => {
+    if (response.data.code !== 0) {
+      if (response.data.code === 100032) {
+        location.reload()
+      }
+    }
+    return response.data
+  },
   error => {
     console.log('err' + error)// for debug
-    Message({
-      message: error.message,
-      type: 'error',
-      duration: 5 * 1000
-    })
+    console.log({ error }) // for debug
+    const { response } = error
+    if (response && !(response.status >= 200 && response.status < 300)) {
+      alert('网络连接异常', response.status)
+      store.commit('CONNECT_STATUS', { connectStatus: false })
+    }
+    if (error.message === 'Network Error') {
+      // location.href = 'chaff://'
+      alert('网络连接失败')
+      store.commit('CONNECT_STATUS', { connectStatus: false })
+    }
+
+    if (error.message === 'timeout of 15000ms exceeded') {
+      // location.href = 'chaff://'
+      alert('网络请求超时15s')
+      store.commit('CONNECT_STATUS', { connectStatus: false })
+    }
     return Promise.reject(error)
   })
 

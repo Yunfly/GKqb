@@ -10,7 +10,12 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+      '^/chaff': {
+        target: 'http://192.168.1.103:1024',
+        changeOrigin:true,   //set the option changeOrigin to true for name-based virtual hosted sites
+      },
+    },
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
