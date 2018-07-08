@@ -116,10 +116,13 @@ export async function completeTask({ bundle_id }) {
 export function fetchTask({ apps }) {
   return request({
     url: '/chaff/v1/universal/all_api_part',
-    method: 'get',
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
     params: {
       'msg_id': 41,
-      'apps': apps[0].bundle_id
+      'apps': JSON.stringify([apps[0].bundle_id])
     }
   })
 }

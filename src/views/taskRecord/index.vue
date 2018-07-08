@@ -55,7 +55,7 @@ export default {
       if (res.code != 0) {
         return this.$toast(`${res.code}: ${res.desc}`);
       }
-      this.tasklogs = res.tasklogs;
+      this.tasklogs = res.tasklogs||[];
       this.page_size = res.page_size;
       this.total_count = res.total_count;
     });
