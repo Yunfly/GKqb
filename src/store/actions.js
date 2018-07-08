@@ -10,4 +10,7 @@ export default {
   saveUserInfo: ({ commit }, event) => {
     commit(types.SaveUserInfo, event)
   },
+  changeConnectStatus: ({ commit }, event) => {
+    commit(types.CONNECT_STATUS, event)
+  },
 }

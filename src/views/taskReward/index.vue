@@ -5,7 +5,7 @@
               <i class="el-icon-arrow-left"></i>
           </div>
           <div class="header-right">
-              <p class="title">任务奖励 = {{bonus|numeral}}元试玩 <span v-if="exclusive">+{{exclusiveBonus|numeral}}元专属</span></p>
+              <p class="title">任务奖励 = {{item.bonus|numeral}}元试玩 <span v-if="exclusive">+{{exclusiveBonus|numeral}}元专属</span></p>
               <p v-show="showCountDown">{{countdown|countdownFormat}}</p>
           </div>
       </div>
@@ -32,7 +32,7 @@
         </div>
       </div>
        <transition name="fade">
-        <RewardModal @completeTask="handleCompleteTask"  v-show="ifShowRewardModal" :appName="name" :bonus="bonus" :exclusiveBonus="exclusiveBonus" @closeModal="handleCloseModal"/>
+        <RewardModal @completeTask="handleCompleteTask"  v-show="ifShowRewardModal" :appName="item.app_name" :bonus="item.bonus" :exclusiveBonus="item.exclusive_bonus||0" @closeModal="handleCloseModal"/>
       </transition>
   </div>
 </template>
@@ -145,12 +145,16 @@ export default {
     //   }
     // });
     this.timer = setInterval(() => {
-      fetchAppDetail({ userInfo: this.userInfo }).then(res => {
+      fetchAppDetail({
+        userInfo: this.userInfo,
+        bid: this.item.bundle_id
+      }).then(res => {
         const { code } = res;
         if (code === 0) {
           // const { time_start } = res;
           this.item = res;
-          this.isInstalled = res.installAppList.includes(this.item.bundle_id);
+          if (!this.item.bundle_id) alert("未获取该应用的bundle_id");
+          this.isInstalled = res.installAppList[res.bundle_id] ? true : false;
           // let now = moment();
           // this.startUseDate = time_start;
           // if (this.startUseDate) {
@@ -161,7 +165,7 @@ export default {
           //   this.completeTask = false;
           // }
         } else {
-          clearInterval(this.timer);
+          clearInterval(this.timer._id);
         }
       });
     }, 3000);
@@ -199,11 +203,13 @@ export default {
           }
           self.startUseTimer = setInterval(() => {
             const { start_time } = res;
-            let now = moment();
+            let now = moment().unix();
             self.startUseDate = start_time;
             if (self.startUseDate) {
-              self.completeTask =
-                now.diff(moment(this.startUseDate * 1000), "minutes") >= 3;
+              self.completeTask = now.diff >= self.item.time_min;
+              if (self.completeTask) {
+                clearInterval(self.timer._id);
+              }
             } else {
               self.completeTask = false;
             }
@@ -247,7 +253,7 @@ export default {
           fetchCancelTask({ userInfo: this.userInfo }).then(res => {
             const { code } = res;
             if (code === 0) {
-              clearInterval(self.timer);
+              clearInterval(self.timer._id);
               self.$router.push("/play");
               return;
             }
@@ -259,6 +265,10 @@ export default {
         }
       });
     }
+  },
+  beforeDestroy() {
+    clearInterval(this.timer._id);
+    clearInterval(this.startUseTimer._id);
   }
 };
 </script>

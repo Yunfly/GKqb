@@ -61,14 +61,14 @@ export default {
     ...mapActions(["saveUserInfo"])
   },
   mounted() {
-    if(this.userInfo.user_id) return
-    fetchUserInfo().then(res => {
-      const { code } = res;
-      if (code === 0) {
-        const { fee, token, user_id } = res;
-        this.saveUserInfo(res);
-      }
-    });
+    // if(this.userInfo.user_id) return
+    // fetchUserInfo().then(res => {
+    //   const { code } = res;
+    //   if (code === 0) {
+    //     const { fee, token, user_id } = res;
+    //     this.saveUserInfo(res);
+    //   }
+    // });
   }
 };
 </script>

@@ -55,6 +55,33 @@ export default new Router({
       component: resolve => {
         require(['../views/taskProcess'], resolve)
       }
+    }, {
+      path: '/taskRecord',
+      component: resolve => {
+        require(['../views/taskRecord'], resolve)
+      }
+    }, {
+      path: '/cashCenter',
+      component: resolve => {
+        require(['../views/cashCenter'], resolve)
+      }
+    }, {
+      path: '/tixianDetail',
+      component: resolve => {
+        require(['../views/tixianDetail'], resolve)
+      }
+    }, {
+      path: '/inroom',
+      component: resolve => {
+        require(['../views/inroom'], resolve)
+      }
+    }, {
+      path: '/about',
+      component: resolve => {
+        require(['../views/about'], resolve)
+      }
     }
   ]
 })
+
+// about

@@ -28,7 +28,7 @@
           </div>
 
           <div>
-            <el-button type="danger" round size="mini">立即提现</el-button>
+            <el-button type="danger" round size="mini" @click="$router.push('/cashCenter')">立即提现</el-button>
           </div>
         </div>
 
@@ -37,10 +37,10 @@
 
           <el-row :gutter="20">
             <el-col :span="6">
-              <div class="option-item">
+              <router-link tag="div" to="/taskRecord" class="option-item">
                 <i class="el-icon-tickets"></i>
                 <p>账户明细</p>
-              </div>
+              </router-link>
             </el-col>
             <el-col :span="6">
               <router-link to="/setting" tag="div" class="option-item">
@@ -48,47 +48,48 @@
                 <p>账户设置</p>
               </router-link>
             </el-col>
-            <el-col :span="6">
+            <!-- <el-col :span="6">
               <div class="option-item">
                 <i class="el-icon-mobile-phone"></i>
                 <p>帮助中心</p>
               </div>
-            </el-col>
+            </el-col> -->
             <el-col :span="6">
-              <div class="option-item">
+              <router-link tag="div" to="/about" class="option-item">
                 <i class="el-icon-service"></i>
                 <p>关于谷壳</p>
-              </div>
+              </router-link>
             </el-col>
             <el-col :span="6">
-              <div class="option-item">
+              <router-link tag="div" to="/inroom" class="option-item">
                 <i class="el-icon-location-outline"></i>
                 <p>谷壳入口</p>
-              </div>
+              </router-link>
             </el-col>
             <el-col :span="6">
-              <div class="option-item">
+              <router-link tag="div" to="/changeBind" class="option-item">
                 <i class="el-icon-refresh"></i>
                 <p>切换账号</p>
-              </div>
+              </router-link>
             </el-col>
           </el-row>
         </div>
       </div>
+      <!-- changeBind -->
   </div>
 </template>
 <script>
-import { fetchUserInfo } from '@/api/user'
+import { fetchUserInfo } from "@/api/user";
 import { mapGetters, mapActions } from "vuex";
 export default {
-  name: 'play',
-  data () {
+  name: "play",
+  data() {
     return {
       ifShowAppModal: false,
       tasklist: [],
       lettertasklist: [],
-      todayaccount:1
-    }
+      todayaccount: 1
+    };
   },
   computed: {
     ...mapGetters(["userInfo"])
@@ -97,7 +98,7 @@ export default {
     ...mapActions(["saveUserInfo"])
   },
   mounted() {
-    if(this.userInfo.user_id) return
+    if (this.userInfo.user_id) return;
     fetchUserInfo().then(res => {
       const { code } = res;
       if (code === 0) {
@@ -106,15 +107,17 @@ export default {
       }
     });
   }
-}
+};
 </script>
 
 <style lang="less" scoped>
 @import "./index.less";
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .3s;
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s;
 }
-.fade-enter, .fade-leave-to {
+.fade-enter,
+.fade-leave-to {
   opacity: 0;
 }
 </style>

@@ -2,7 +2,7 @@
 <template>
   <div class="normal">
       <div class="header">
-          <router-link class="header-left" :to="{path:'/'}" tag='div'>
+          <router-link class="header-left" :to="{path:'/person-center'}" tag='div'>
               <i class="el-icon-arrow-left"></i>
           </router-link>
           <div class="header-right">

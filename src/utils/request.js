@@ -1,10 +1,11 @@
 import axios from 'axios'
+import store from '../store/store'
 
 // create an axios instance
 console.log(process.env)
 const service = axios.create({
-  // baseURL: process.env.BASE_API, // api的base_url
-  timeout: 5000 // request timeout
+  baseURL: process.env.BASE_API, // api的base_url
+  timeout: 15000 // request timeout
 })
 
 // request interceptor
@@ -20,18 +21,31 @@ service.interceptors.request.use(config => {
 // 回调检测
 service.interceptors.response.use(
   response => {
-    if (response.data.errcode === 200001) {
-      alert('你的助手未能访问互联网')
-    }
-    if (response.data.errcode === 200000) {
-      alert('无效的路径 errorcode:200000')
+    if (response.data.code !== 0) {
+      if (response.data.code === 100032) {
+        location.reload()
+      }
     }
     return response.data
   },
   error => {
     console.log('err' + error)// for debug
+    console.log({ error }) // for debug
+    const { response } = error
+    if (response && !(response.status >= 200 && response.status < 300)) {
+      alert('网络连接异常', response.status)
+      store.commit('CONNECT_STATUS', { connectStatus: false })
+    }
     if (error.message === 'Network Error') {
       // location.href = 'chaff://'
+      alert('网络连接失败')
+      store.commit('CONNECT_STATUS', { connectStatus: false })
+    }
+
+    if (error.message === 'timeout of 15000ms exceeded') {
+      // location.href = 'chaff://'
+      alert('网络请求超时15s')
+      store.commit('CONNECT_STATUS', { connectStatus: false })
     }
     return Promise.reject(error)
   })

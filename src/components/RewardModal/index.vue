@@ -4,7 +4,7 @@
         <i class="el-icon-close" @click="handleCloseModal"></i>
         <img src="@/assets/icon_pop_play_bg.png" alt="">
         <p class="text">完成任务</p>
-        <p class="text">+<span>{{parseInt(bonus||0)+parseInt(exclusiveBonus||0)}}</span>元</p>
+        <p class="text">+<span>{{parseInt(bonus||0)+parseInt(exclusiveBonus||0)|numeral}}</span>元</p>
         <div class="flex">
           <p>试玩赚钱</p>
           <p>{{appName}}</p>

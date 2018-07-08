@@ -11,8 +11,8 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/user_message': {
-        target: 'http://39.104.175.45:8081/',
+      '^/chaff': {
+        target: 'http://192.168.1.103:1024',
         changeOrigin:true,   //set the option changeOrigin to true for name-based virtual hosted sites
       },
     },

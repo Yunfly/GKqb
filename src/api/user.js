@@ -1,13 +1,12 @@
 import request from '@/utils/request'
+import { CLIENT_RENEG_LIMIT } from 'tls';
 
 export async function fetchCurrent() {
   const response = await request({
-    url: '/user_message',
-    method: 'post',
-    data: {
-      'msg_id': 21,
-      token: 'dd1f8a4b-c6ff-41ce-c10d-0839fc4e3610',
-      user_id: '5b02f52ff0988a9e7fd7cf34'
+    url: '/chaff/v1/universal/all_api_part',
+    method: 'get',
+    params: {
+      'msg_id': 21
     }
   })
   if (response.code === 0) {
@@ -20,36 +19,44 @@ export async function fetchCurrent() {
   }
 }
 
-export async function fetchTaskList({ userInfo }) {
-  const { user_id, token } = userInfo
+// 获取服务器任务列表
+export async function fetchTaskList() {
   const response = await request({
-    url: '/user_message',
-    method: 'post',
-    data: {
-      'msg_id': 31,
-      user_id,
-      token
+    url: '/chaff/v1/universal/all_api_part',
+    method: 'get',
+    params: {
+      'msg_id': 31
     }
   })
-  return response
-}
 
-export function fetchTaskListMock() {
-  return request({
-    url: '/tasklist',
-    method: 'get'
+  let appBundleIDList = []
+  if (response.code === 0) {
+    appBundleIDList = response.apps.map(x => x.bundle_id)
+  }
+  const fetchapp = await fetchAppList({ appBundleIDList })
+  let applist = []
+  if (fetchapp.code === 0) {
+    applist = fetchapp.apps || []
+  }
+
+  let apps = []
+  apps = response.apps.filter(x => {
+    return !applist[x.bundle_id] || false
   })
+
+  console.log({ apps });
+  return {
+    ...response,
+    apps
+  }
 }
 
-export async function fetchCancelTask({ userInfo }) {
-  const { user_id, token } = userInfo
+export async function fetchCancelTask() {
   const response = await request({
-    url: '/user_message',
-    method: 'post',
-    data: {
+    url: '/chaff/v1/universal/all_api_part',
+    method: 'get',
+    params: {
       'msg_id': 51,
-      user_id,
-      token,
       desc: '用户取消任务',
       code: 10542
     }
@@ -81,16 +88,13 @@ export function fetchTaskStatus(params) {
   })
 }
 
-export async function completeTask({ userInfo }) {
-  const { user_id, token } = userInfo
+export async function completeTask({ bundle_id }) {
 
   const response = await request({
-    url: '/user_message',
-    method: 'post',
-    data: {
+    url: '/chaff/v1/universal/all_api_part',
+    method: 'get',
+    params: {
       'msg_id': 51,
-      user_id,
-      token,
       desc: '',
       code: 0
     }
@@ -98,7 +102,10 @@ export async function completeTask({ userInfo }) {
   if (response.code === 0) {
     return request({
       url: '/chaff/v1/task/task_end',
-      method: 'get'
+      method: 'get',
+      params: {
+        bundle_id
+      }
     })
   } else {
     alert(response.desc)
@@ -106,45 +113,35 @@ export async function completeTask({ userInfo }) {
 
 }
 
-export function fetchTask({ userInfo, apps }) {
-  const { user_id, token } = userInfo
+export function fetchTask({ apps }) {
   return request({
-    url: '/user_message',
-    method: 'post',
-    data: {
+    url: '/chaff/v1/universal/all_api_part',
+    method: 'get',
+    params: {
       'msg_id': 41,
-      user_id,
-      token,
-      apps
+      'apps': apps[0].bundle_id
     }
   })
 }
 
-export async function fetchSmsCode({ userInfo, mobile }) {
-  const { user_id, token } = userInfo
+export async function fetchSmsCode({ mobile }) {
   const response = await request({
-    url: '/user_message',
-    method: 'post',
-    data: {
+    url: '/chaff/v1/universal/all_api_part',
+    method: 'get',
+    params: {
       msg_id: 11,
-      user_id,
-      token,
-      idfa: 'idfa000001',
       mobile: mobile.toString()
     }
   })
   return response
 }
 
-export async function bindphone({ userInfo, mobile, sms }) {
-  const { user_id, token } = userInfo
+export async function bindphone({ mobile, sms }) {
   const response = await request({
-    url: '/user_message',
-    method: 'post',
-    data: {
+    url: '/chaff/v1/user/verify_sms',
+    method: 'get',
+    params: {
       msg_id: 13,
-      user_id,
-      token,
       sms,
       mobile: mobile.toString()
     }
@@ -154,46 +151,74 @@ export async function bindphone({ userInfo, mobile, sms }) {
 
 export function fetchUserInfo(params) {
   return request({
-    url: '/user_message',
-    method: 'post',
-    data: { 'msg_id': 1, 'idfa': 'idfa000001' }
+    url: '/chaff/v1/universal/all_api_part',
+    method: 'get',
+    params: { 'msg_id': 1 }
   })
 }
 
-export async function fetchAppDetail({ userInfo }) {
+// 获取手机已安装的app
+export async function fetchAppList({ appBundleIDList }) {
+  const response = await request({
+    url: '/chaff/v1/task/get_app_bundleID',
+    method: 'get',
+    params: {
+      apps: appBundleIDList.join(",")
+    }
+  })
+  return response
+}
+
+export async function fetchAppDetail({ bid }) {
   // const itunesResponse = await request({
   //   url: `https://itunes.apple.com/lookup?bid=${bid}`,
   //   method: 'get'
   // })
-  const fetchAppList = await request({
-    url: '/chaff/v1/task/get_app_bundleID',
-    method: 'get'
-  })
-  if (fetchAppList.code !== 0) return alert('无法获取手机已安装的app')
-  const installAppList = fetchAppList.appBundleID
-  const { user_id, token } = userInfo
+  const applist = await fetchAppList({ appBundleIDList: [bid] })
+  if (applist.code !== 0) return alert('无法获取手机已安装的app')
+  const installAppList = applist.apps
   const response = await request({
-    url: '/user_message',
-    method: 'post',
-    data: {
-      'msg_id': 23,
-      user_id,
-      token
+    url: '/chaff/v1/universal/all_api_part',
+    method: 'get',
+    params: {
+      'msg_id': 23
     }
   })
   return Object.assign({ ...response, installAppList })
 }
 
-export function changeUserName({ userInfo, value }) {
-  const { user_id, token } = userInfo
+export function changeUserName({ value }) {
   return request({
-    url: '/user_message',
-    method: 'post',
-    data: {
+    url: '/chaff/v1/universal/all_api_part',
+    method: 'get',
+    params: {
       'msg_id': 61,
-      user_id,
-      token,
       user_name: value
+    }
+  })
+}
+
+export function fetchTaskRecord(id) {
+  return request({
+    url: '/chaff/v1/universal/all_api_part',
+    method: 'get',
+    params: {
+      'msg_id': 81,
+      page_id: id
+    }
+  })
+}
+
+export function tixian({ receipt_type, account, money }) {
+  console.log({ receipt_type, account, money })
+  return request({
+    url: '/chaff/v1/universal/all_api_part',
+    method: 'get',
+    params: {
+      'msg_id': 71,
+      receipt_type,
+      account,
+      money
     }
   })
 }

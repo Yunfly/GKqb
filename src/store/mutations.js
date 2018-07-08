@@ -2,11 +2,13 @@ import {
   HIDE_LOADING,
   SHOW_LOADING,
   SaveUserInfo,
+  CONNECT_STATUS,
 } from './type'
 
 const state = {
   loading: false,
-  userInfo: {}
+  userInfo: {},
+  connectStatus: true,
 }
 
 const mutations = {
@@ -19,13 +21,20 @@ const mutations = {
   },
   [SaveUserInfo](state, event) {
     state.userInfo = event
-  }
+  },
+  [CONNECT_STATUS](state, event) {
+    state.connectStatus = event.connectStatus
+  },
+
 }
 
 const getters = {
   userInfo(state) {
     return state.userInfo
-  }
+  },
+  connectStatus(state) {
+    return state.connectStatus
+  },
 }
 
 export default {
