@@ -113,18 +113,29 @@ export async function completeTask({ bundle_id }) {
 
 }
 
-export function fetchTask({ apps }) {
-  return request({
-    url: '/chaff/v1/universal/all_api_part',
-    method: 'post',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    params: {
-      'msg_id': 41,
-      'apps': JSON.stringify([apps[0].bundle_id])
-    }
+export async function fetchTask({ apps }) {
+  const response = await request({
+    url: '/chaff/v1/universal/get_device_info',
+    method: 'get'
   })
+  if (response.code === 0 && response.deviceIofo) {
+    const { deviceIofo } = response
+    return request({
+      url: '/chaff/v1/universal/all_api_part',
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      params: {
+        'msg_id': 41,
+        'apps': apps[0].bundle_id,
+        ...deviceIofo
+      }
+    })
+  } else {
+    alert(`设备信息异常,code:${response.code}`)
+  }
+
 }
 
 export async function fetchSmsCode({ mobile }) {
