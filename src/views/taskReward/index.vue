@@ -16,7 +16,7 @@
 
         <div class="app-content">
 <p>
-一、前往App Store搜索： <span>{{item.keyword||''}}</span>  约第<span>{{item.sort||1}}</span>位,
+一、前往App Store搜索： <span>{{item.keyword||''}}</span>  约第<span>{{item.rank||1}}</span>位,
     找到该图标应用下载安装
 <br>
 二、回本页面，点击<span>开始试玩</span>体验3分钟,
