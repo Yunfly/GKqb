@@ -38,7 +38,7 @@ export default {
       const self = this;
       fetchTask({ apps: [this.item], userInfo: this.userInfo })
         .then(res => {
-          self.$emit("handleClick", res);
+          self.$emit("handleClick", Object.assign(self.item, res));
           // const { code, desc } = res;
           // if (code === 0) {
           //   self.$emit("handleClick", res);
@@ -46,7 +46,9 @@ export default {
           // }
           // alert(desc);
         })
-        .catch(() => self.$emit("errNetWord"));
+        .catch(err => {
+          self.$emit("errNetWord");
+        });
     }
   }
 };

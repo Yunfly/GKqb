@@ -201,6 +201,16 @@ export async function fetchAppDetail({ bid }) {
   return Object.assign({ ...response, installAppList })
 }
 
+export async function fetchTaskDetail() {
+  return request({
+    url: '/chaff/v1/universal/all_api_part',
+    method: 'get',
+    params: {
+      'msg_id': 23
+    }
+  })
+}
+
 export function changeUserName({ value }) {
   return request({
     url: '/chaff/v1/universal/all_api_part',
@@ -233,6 +243,16 @@ export function tixian({ receipt_type, account, money }) {
       receipt_type,
       account,
       money
+    }
+  })
+}
+
+export function ableToOpen({ app_bundleID }) {
+  return request({
+    url: '/chaff/v1/task/task_open',
+    method: 'get',
+    params: {
+      app_bundleID
     }
   })
 }

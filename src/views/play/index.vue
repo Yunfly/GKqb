@@ -12,6 +12,10 @@
       </div>
 
     <div class="task-list">
+      <p class="title"  v-if="receivedTask">当前任务</p>
+      <TaskCard v-if="receivedTask" :turn="true" @handleClick='handleTaskItem' :item='receivedTask' />
+    </div>
+    <div class="task-list">
       <p class="title">标准任务</p>
       <TaskCard :turn="true" @errNetWord="ifShowAppModal=true" v-for="(item,key) in tasklist" @handleClick='handleTaskItem' :item='item' :key="key" />
     </div>
@@ -28,7 +32,14 @@
 <script>
 import AppModal from "@/components/AppModal";
 import TaskCard from "@/components/TaskCard";
-import { fetchTaskList, fetchTask } from "@/api/user";
+import { MessageBox } from "mint-ui";
+
+import {
+  fetchTaskList,
+  fetchTask,
+  fetchTaskDetail,
+  fetchCancelTask
+} from "@/api/user";
 import { mapGetters } from "vuex";
 export default {
   name: "play",
@@ -36,7 +47,8 @@ export default {
     return {
       ifShowAppModal: false,
       tasklist: [],
-      lettertasklist: []
+      lettertasklist: [],
+      receivedTask: undefined
     };
   },
   components: {
@@ -45,16 +57,33 @@ export default {
   },
   mounted() {
     this.fetchTaskList();
+    this.fetchTaskDetail();
   },
   computed: {
     ...mapGetters(["userInfo"])
   },
   methods: {
+    async fetchTaskDetail() {
+      const response = await fetchTaskDetail();
+      if (response.code === 0 && response.app_name)
+        this.receivedTask = response;
+      else this.receivedTask = undefined;
+    },
     handleCloseModal() {
       this.ifShowAppModal = false;
     },
     handleTaskItem(item) {
-      this.$router.push({ name: "TaskPage", params: { item } });
+      const self = this;
+      console.log({ item });
+      if (
+        item.code !== 0 &&
+        this.receivedTask &&
+        item.bundle_id !== this.receivedTask.bundle_id
+      ) {
+        self.cancelThisTask();
+      } else {
+        self.$router.push({ name: "TaskPage", params: { item } });
+      }
       // const{name, bonus, urlScheme, icon,id, bid,enableDate,exclusiveBonus} = item
       // this.fetchTaskList(() => this.$router.push({path: '/task', query: { exclusiveBonus, bid, icon, name, bonus,urlScheme,enableDate,id }}));
     },
@@ -69,6 +98,28 @@ export default {
         .catch(err => {
           this.ifShowAppModal = true;
         });
+    },
+    cancelThisTask() {
+      const self = this;
+      MessageBox({
+        title: "别贪心",
+        message: "完成或放弃当前任务才能领新的哦",
+        showCancelButton: true,
+        confirmButtonText: "继续完成",
+        cancelButtonText: "放弃任务"
+      }).then(action => {
+        if (action === "cancel") {
+          fetchCancelTask({ userInfo: this.userInfo }).then(res => {
+            const { code } = res;
+            if (code === 0) {
+              return;
+            }
+            alert(res.desc);
+          });
+        } else {
+          return;
+        }
+      });
     }
   }
 };

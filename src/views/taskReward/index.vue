@@ -45,7 +45,8 @@ import {
   fetchTaskStatus,
   fetchCancelTask,
   completeTask,
-  fetchAppDetail
+  fetchAppDetail,
+  ableToOpen
 } from "@/api/user";
 import { mapGetters } from "vuex";
 import { setInterval } from "timers";
@@ -183,8 +184,12 @@ export default {
     handleCloseModal() {
       this.ifShowRewardModal = false;
     },
-    handleTrying() {
+    async handleTrying() {
       let self = this;
+      const response = await ableToOpen({
+        app_bundleID: this.item.bundle_id
+      });
+      if (response === 1001) return alert("没安装该应用");
       startUseApp({
         bundle_id: this.item.bundle_id
       }).then(res => {
@@ -206,7 +211,9 @@ export default {
             let now = moment().unix();
             self.startUseDate = start_time;
             if (self.startUseDate) {
-              self.completeTask = now.diff >= self.item.time_min;
+              console.log({ now });
+              console.log({ time_min: self.item.time_min });
+              self.completeTask = now >= self.item.time_min;
               if (self.completeTask) {
                 clearInterval(self.timer._id);
               }
@@ -215,14 +222,15 @@ export default {
             }
           }, 3000);
         }
-        // location.href = this.item.url_scheme;
-        // window.setTimeout(() => {
-        //   window.location.href = this.itunesUrl;
-        // }, 2000);
+        if (this.item.url_scheme) location.href = this.item.url_scheme;
+        else location.href = `chaff://${this.item.bundle_id}`;
+        window.setTimeout(() => {
+          window.location.href = "chaff://com.apple.AppStore";
+        }, 2000);
       });
     },
     handleGoAppStore() {
-      location.href = "itms-apps://";
+      location.href = "chaff://com.apple.AppStore";
     },
     handleCompleteTask() {
       completeTask({ bundle_id: this.bundle_id, userInfo: this.userInfo }).then(
@@ -244,7 +252,7 @@ export default {
       const self = this;
       MessageBox({
         title: "别贪心",
-        message: "完成或放弃当前任务才能领新的哦?",
+        message: "完成或放弃当前任务才能领新的哦",
         showCancelButton: true,
         confirmButtonText: "继续完成",
         cancelButtonText: "放弃任务"
