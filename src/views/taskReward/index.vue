@@ -222,8 +222,8 @@ export default {
             }
           }, 3000);
         }
-        if (this.item.url_scheme) location.href = this.item.url_scheme;
-        else location.href = `chaff://${this.item.bundle_id}`;
+        if (this.item.url_scheme) location.href = self.item.url_scheme;
+        else location.href = `chaff://${self.item.bundle_id}`;
         window.setTimeout(() => {
           window.location.href = "chaff://com.apple.AppStore";
         }, 2000);
@@ -232,21 +232,22 @@ export default {
     handleGoAppStore() {
       location.href = "chaff://com.apple.AppStore";
     },
-    handleCompleteTask() {
-      completeTask({ bundle_id: this.bundle_id, userInfo: this.userInfo }).then(
-        res => {
-          const { code } = res;
-          if (code === 0) {
-            this.$message({
-              message: "领取成功",
-              type: "success",
-              onClose: () => this.$router.push("/play")
-            });
-          } else {
-            alert(res.msg);
-          }
+    async handleCompleteTask() {
+      await completeTask({
+        bundle_id: this.bundle_id,
+        userInfo: this.userInfo
+      }).then(res => {
+        const { code } = res;
+        if (code === 0) {
+          this.$message({
+            message: "领取成功",
+            type: "success"
+          });
+          this.$router.push("/play");
+        } else {
+          if (res.msg) alert(res.msg);
         }
-      );
+      });
     },
     leaveThisRoute() {
       const self = this;

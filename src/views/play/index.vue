@@ -107,11 +107,12 @@ export default {
         showCancelButton: true,
         confirmButtonText: "继续完成",
         cancelButtonText: "放弃任务"
-      }).then(action => {
+      }).then(async action => {
         if (action === "cancel") {
-          fetchCancelTask({ userInfo: this.userInfo }).then(res => {
+          await fetchCancelTask({ userInfo: this.userInfo }).then(res => {
             const { code } = res;
             if (code === 0) {
+              self.receivedTask = undefined;
               return;
             }
             alert(res.desc);
