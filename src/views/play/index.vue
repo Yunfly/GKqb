@@ -82,7 +82,7 @@ export default {
       ) {
         self.cancelThisTask();
       } else {
-        self.$router.push({ name: "TaskPage", params: { item } });
+        self.$router.replace({ name: "TaskPage", params: { item } });
       }
       // const{name, bonus, urlScheme, icon,id, bid,enableDate,exclusiveBonus} = item
       // this.fetchTaskList(() => this.$router.push({path: '/task', query: { exclusiveBonus, bid, icon, name, bonus,urlScheme,enableDate,id }}));

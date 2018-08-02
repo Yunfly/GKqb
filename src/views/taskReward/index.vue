@@ -263,7 +263,7 @@ export default {
             const { code } = res;
             if (code === 0) {
               clearInterval(self.timer._id);
-              self.$router.push("/play");
+              self.$router.replace("/play");
               return;
             }
 
