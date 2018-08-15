@@ -31,7 +31,6 @@ export default {
     if (response.code === 0) {
       this.saveUserInfo({
         ...response,
-        token: "dd1f8a4b-c6ff-41ce-c10d-0839fc4e3610"
       });
     } else {
       alert(response.desc);

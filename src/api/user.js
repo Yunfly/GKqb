@@ -1,5 +1,4 @@
 import request from '@/utils/request'
-import { CLIENT_RENEG_LIMIT } from 'tls';
 
 export async function fetchCurrent() {
   const response = await request({
@@ -163,12 +162,21 @@ export async function bindphone({ mobile, sms }) {
   return response
 }
 
-export function fetchUserInfo(params) {
-  return request({
+export async function fetchUserInfo(params) {
+  const response = await request({
     url: '/chaff/v1/universal/all_api_part',
     method: 'get',
-    params: { 'msg_id': 1 }
+    params: { 'msg_id': 21 }
   })
+
+  if (response.code === 0 && response.user_id !== undefined) return response
+  else {
+    return request({
+      url: '/chaff/v1/universal/all_api_part',
+      method: 'get',
+      params: { 'msg_id': 1 }
+    })
+  }
 }
 
 // 获取手机已安装的app

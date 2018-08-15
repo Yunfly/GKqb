@@ -26,7 +26,7 @@
 
             <div class="item-box">
               <p class="title">手机绑定</p>
-              <p class="item" v-bind:style="{color:'#000'}">{{phone|hiddenPhone}}  <router-link to="/changeBind" tag="i" class="el-icon-edit"></router-link></p>
+              <p class="item" v-bind:style="{color:'#000'}">{{userInfo.mobile|hiddenPhone}}  <router-link to="/changeBind" tag="i" class="el-icon-edit"></router-link></p>
             </div>
 
             <div class="item-box">
@@ -42,7 +42,7 @@
   </div>
 </template>
 <script>
-import { fetchUserInfo,changeUserName } from "@/api/user";
+import { fetchUserInfo, changeUserName } from "@/api/user";
 import { mapGetters, mapActions } from "vuex";
 import { MessageBox } from "mint-ui";
 
@@ -78,22 +78,25 @@ export default {
   methods: {
     ...mapActions(["saveUserInfo"]),
     changeUserName() {
-      MessageBox.prompt('请输入昵称').then(({ value, action }) => {
+      MessageBox.prompt("请输入昵称").then(({ value, action }) => {
+        if (action === "cancel") {
+          return;
+        }
         changeUserName({
-          userInfo:this.userInfo,
+          userInfo: this.userInfo,
           value
-        }).then(res=>{
-          if(res.code===0){
-
+        }).then(res => {
+          if (res.code === 0) {
+            location.reload();
           } else {
-            alert(res.desc)
+            alert(res.desc);
           }
-        })
+        });
       });
     }
   },
   mounted() {
-    if(this.userInfo.user_id) return
+    if (this.userInfo.user_id) return;
     fetchUserInfo().then(res => {
       const { code } = res;
       if (code === 0) {

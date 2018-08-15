@@ -6,7 +6,10 @@
           </div>
           <div class="header-right">
               <p class="title">任务奖励 = {{item.bonus|numeral}}元试玩 <span v-if="exclusive">+{{exclusiveBonus|numeral}}元专属</span></p>
-              <p v-show="showCountDown">{{countdown|countdownFormat}}</p>
+              <p>
+                <span>任务数量：{{left_num}}</span>
+                <span v-show="showCountDown"> | {{countdown|countdownFormat}}</span>
+              </p>
           </div>
       </div>
       <div>
@@ -131,6 +134,7 @@ export default {
           this.imageUrl = res.app_ico;
           this.enableDate = res.time_end;
           this.startUseDate = res.time_start;
+          this.left_num = res.left_num;
         } else {
           alert(res.desc);
         }
