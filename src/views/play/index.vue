@@ -25,7 +25,7 @@
     </div> -->
 
       <transition name="fade">
-        <AppModal  v-show="ifShowAppModal" @closeModal="handleCloseModal"/>
+        <!-- <AppModal  v-show="ifShowAppModal" @closeModal="handleCloseModal"/> -->
       </transition>
   </div>
 </template>
@@ -91,13 +91,13 @@ export default {
       //   todo:判断是否开启助手
       fetchTaskList({ userInfo: this.userInfo })
         .then(res => {
-          this.ifShowAppModal = false;
+          // this.ifShowAppModal = false;
           const { apps: data } = res;
           this.tasklist = data;
         })
-        .catch(err => {
-          this.ifShowAppModal = true;
-        });
+        // .catch(err => {
+        //   this.ifShowAppModal = true;
+        // });
     },
     cancelThisTask() {
       const self = this;
